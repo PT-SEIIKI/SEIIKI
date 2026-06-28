@@ -214,6 +214,15 @@ export function MainNav() {
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={cn(
             navigationMenuTriggerStyle(),
+            pathname.startsWith('/produk') && 'bg-accent text-accent-foreground'
+          )}>
+            <Link href="/produk">Produk</Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={cn(
+            navigationMenuTriggerStyle(),
             pathname === '/karir' && 'bg-accent text-accent-foreground'
           )}>
             <Link href="/karir">Karir</Link>
