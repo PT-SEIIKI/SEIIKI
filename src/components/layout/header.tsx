@@ -79,29 +79,9 @@ export function Header() {
   }
 
   return (
-    <header
-      className={cn(
-        'sticky z-50 w-full transition-all duration-300',
-        // Keep the header flush at the very top initially, add a little offset when scrolled
-        scrolled ? 'top-4' : 'top-0',
-        isHome && !scrolled ? 'bg-transparent' : ''
-      )}
-    >
-      <div
-        className={cn(
-          'transition-all duration-300',
-          // Initial: full-width transparent container
-          isHome && !scrolled
-            ? 'container mx-auto px-4'
-            : [
-                // Scrolled: centered capsule with blur, ring, and shadow
-                'mx-auto max-w-sm md:max-w-6xl px-2 sm:px-3',
-                'rounded-full bg-background/80 shadow-lg ring-1 ring-black/5',
-                'backdrop-blur supports-[backdrop-filter]:bg-background/60'
-              ].join(' ')
-        )}
-      >
-        <div className={cn('flex items-center', scrolled ? 'h-34' : 'h-34')}>
+    <header className="w-full bg-background border-b">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center h-20">
           <Link href="/" className="mr-6 flex items-center space-x-2">
             <Logo className=" h-14 md:h-16 w-auto" />
           </Link>
