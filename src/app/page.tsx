@@ -96,7 +96,7 @@ function HeroSection({ slides }: { slides: HeroSlide[] }) {
   };
 
   return (
-    <section className="relative w-full min-h-[calc(100dvh+5rem)] -mt-20 text-white flex items-center justify-center overflow-hidden">
+    <section className="relative w-full min-h-screen text-white flex items-center justify-center overflow-hidden">
       {/* Background carousel */}
       <div className="absolute inset-0">
         {activeSlides.map((slide, index) => (
