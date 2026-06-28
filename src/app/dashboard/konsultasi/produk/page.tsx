@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, Plus, Pencil, Trash2, Package } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, Package, Upload, X, ImageIcon } from 'lucide-react';
 import { AdminAuthGuard } from '@/components/auth/admin-auth-guard';
 
 interface Produk {
@@ -19,7 +19,6 @@ interface Produk {
   nama: string;
   harga: number;
   deskripsi: string;
-  kategori: string | null;
   imageUrl: string | null;
   isActive: boolean;
   order: number;
@@ -27,6 +26,78 @@ interface Produk {
 
 function formatRupiah(value: number) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value);
+}
+
+function ImageUpload({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = async (file: File) => {
+    setError('');
+    setIsUploading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch('/api/produk/upload', { method: 'POST', body: form });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Gagal upload');
+      onChange(data.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal mengupload gambar');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label>Gambar Produk</Label>
+      {value ? (
+        <div className="relative w-full aspect-video rounded-lg overflow-hidden border bg-muted">
+          <img src={value} alt="Preview" className="object-cover w-full h-full" />
+          <button
+            type="button"
+            onClick={() => onChange('')}
+            className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      ) : (
+        <div
+          onClick={() => inputRef.current?.click()}
+          onDrop={handleDrop}
+          onDragOver={e => e.preventDefault()}
+          className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-muted-foreground/30 rounded-lg p-8 cursor-pointer hover:border-primary/50 hover:bg-muted/50 transition-colors"
+        >
+          {isUploading ? (
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          ) : (
+            <ImageIcon className="h-8 w-8 text-muted-foreground" />
+          )}
+          <div className="text-center">
+            <p className="text-sm font-medium">{isUploading ? 'Mengupload...' : 'Klik atau seret gambar ke sini'}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">JPG, PNG, WebP — Maks. 5MB</p>
+          </div>
+        </div>
+      )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp"
+        className="hidden"
+        onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
+      />
+      {error && <p className="text-xs text-destructive">{error}</p>}
+    </div>
+  );
 }
 
 function FormDialog({
@@ -41,7 +112,6 @@ function FormDialog({
     nama: '',
     harga: '',
     deskripsi: '',
-    kategori: '',
     imageUrl: '',
     isActive: true,
     order: '0',
@@ -55,13 +125,12 @@ function FormDialog({
         nama: editData.nama,
         harga: String(editData.harga),
         deskripsi: editData.deskripsi,
-        kategori: editData.kategori || '',
         imageUrl: editData.imageUrl || '',
         isActive: editData.isActive,
         order: String(editData.order),
       });
     } else {
-      setForm({ nama: '', harga: '', deskripsi: '', kategori: '', imageUrl: '', isActive: true, order: '0' });
+      setForm({ nama: '', harga: '', deskripsi: '', imageUrl: '', isActive: true, order: '0' });
     }
     setError('');
   }, [editData, open]);
@@ -83,8 +152,11 @@ function FormDialog({
         method: editData ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...form,
+          nama: form.nama,
           harga: Number(form.harga),
+          deskripsi: form.deskripsi,
+          imageUrl: form.imageUrl || null,
+          isActive: form.isActive,
           order: Number(form.order) || 0,
         }),
       });
@@ -110,6 +182,8 @@ function FormDialog({
         </DialogHeader>
         {error && <Alert variant="destructive"><AlertDescription>{error}</AlertDescription></Alert>}
         <div className="space-y-4">
+          <ImageUpload value={form.imageUrl} onChange={url => setForm(f => ({ ...f, imageUrl: url }))} />
+
           <div className="space-y-2">
             <Label>Nama Produk <span className="text-red-500">*</span></Label>
             <Input value={form.nama} onChange={e => setForm(f => ({ ...f, nama: e.target.value }))} placeholder="Contoh: Kabel NYY 3x4mm" />
@@ -132,14 +206,6 @@ function FormDialog({
               placeholder="Deskripsi lengkap produk..."
               rows={3}
             />
-          </div>
-          <div className="space-y-2">
-            <Label>Kategori</Label>
-            <Input value={form.kategori} onChange={e => setForm(f => ({ ...f, kategori: e.target.value }))} placeholder="Contoh: Kabel, Panel, MCB" />
-          </div>
-          <div className="space-y-2">
-            <Label>URL Gambar (opsional)</Label>
-            <Input value={form.imageUrl} onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))} placeholder="https://..." />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -226,8 +292,8 @@ export default function ProdukAdminPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Gambar</TableHead>
                       <TableHead>Nama Produk</TableHead>
-                      <TableHead>Kategori</TableHead>
                       <TableHead>Harga</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Urutan</TableHead>
@@ -238,19 +304,21 @@ export default function ProdukAdminPage() {
                     {produkList.map(p => (
                       <TableRow key={p.id}>
                         <TableCell>
+                          <div className="w-12 h-12 rounded-md overflow-hidden bg-muted flex items-center justify-center shrink-0">
+                            {p.imageUrl ? (
+                              <img src={p.imageUrl} alt={p.nama} className="object-cover w-full h-full" />
+                            ) : (
+                              <Package className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>
                           <div>
                             <p className="font-medium">{p.nama}</p>
                             <p className="text-xs text-muted-foreground line-clamp-1">{p.deskripsi}</p>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          {p.kategori ? (
-                            <Badge variant="outline" className="text-xs">{p.kategori}</Badge>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="font-medium text-green-700">{formatRupiah(p.harga)}</TableCell>
+                        <TableCell className="font-medium text-green-700 whitespace-nowrap">{formatRupiah(p.harga)}</TableCell>
                         <TableCell>
                           <Badge variant={p.isActive ? 'default' : 'secondary'}>
                             {p.isActive ? 'Aktif' : 'Nonaktif'}

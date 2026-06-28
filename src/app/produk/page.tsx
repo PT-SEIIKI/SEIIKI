@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/db';
-import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Package, Zap } from 'lucide-react';
 
@@ -17,8 +16,6 @@ export default async function ProdukPage() {
     where: { isActive: true },
     orderBy: [{ order: 'asc' }, { createdAt: 'desc' }],
   });
-
-  const categories = [...new Set(produkList.map(p => p.kategori).filter(Boolean))] as string[];
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -43,51 +40,35 @@ export default async function ProdukPage() {
             <p className="text-sm mt-1">Silakan kunjungi kembali nanti.</p>
           </div>
         ) : (
-          <>
-            {categories.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-8">
-                <span className="text-sm text-muted-foreground self-center mr-1">Kategori:</span>
-                {categories.map(cat => (
-                  <Badge key={cat} variant="secondary" className="text-sm px-3 py-1">{cat}</Badge>
-                ))}
-              </div>
-            )}
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {produkList.map(produk => (
+              <Card key={produk.id} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-200 border-0 shadow-md">
+                <div className="relative bg-gradient-to-br from-slate-100 to-slate-200 aspect-video flex items-center justify-center">
+                  {produk.imageUrl ? (
+                    <img
+                      src={produk.imageUrl}
+                      alt={produk.nama}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <Package className="h-16 w-16 text-slate-400" />
+                  )}
+                </div>
 
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {produkList.map(produk => (
-                <Card key={produk.id} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-200 border-0 shadow-md">
-                  <div className="relative bg-gradient-to-br from-slate-100 to-slate-200 aspect-video flex items-center justify-center">
-                    {produk.imageUrl ? (
-                      <img
-                        src={produk.imageUrl}
-                        alt={produk.nama}
-                        className="object-cover w-full h-full"
-                      />
-                    ) : (
-                      <Package className="h-16 w-16 text-slate-400" />
-                    )}
-                    {produk.kategori && (
-                      <div className="absolute top-2 left-2">
-                        <Badge className="bg-blue-600 text-white text-xs">{produk.kategori}</Badge>
-                      </div>
-                    )}
-                  </div>
+                <CardHeader className="pb-2 pt-4">
+                  <h3 className="font-bold text-gray-900 leading-snug">{produk.nama}</h3>
+                </CardHeader>
 
-                  <CardHeader className="pb-2 pt-4">
-                    <h3 className="font-bold text-gray-900 leading-snug">{produk.nama}</h3>
-                  </CardHeader>
+                <CardContent className="flex-1 pb-2">
+                  <p className="text-sm text-muted-foreground line-clamp-3">{produk.deskripsi}</p>
+                </CardContent>
 
-                  <CardContent className="flex-1 pb-2">
-                    <p className="text-sm text-muted-foreground line-clamp-3">{produk.deskripsi}</p>
-                  </CardContent>
-
-                  <CardFooter className="pt-3 border-t">
-                    <p className="text-lg font-bold text-blue-700">{formatRupiah(produk.harga)}</p>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </>
+                <CardFooter className="pt-3 border-t">
+                  <p className="text-lg font-bold text-blue-700">{formatRupiah(produk.harga)}</p>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
         )}
       </div>
     </main>
