@@ -198,7 +198,7 @@ export function MainNav() {
             navigationMenuTriggerStyle(),
             pathname.startsWith('/layanan') && 'bg-accent text-accent-foreground'
           )}>
-            <Link href="/layanan">Konsultasi</Link>
+            <Link href="/layanan">Layanan</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
