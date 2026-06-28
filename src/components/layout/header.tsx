@@ -250,11 +250,11 @@ export function Header() {
 
                     <div className="px-2 py-2 space-y-2">
                       <Link
-                        href="/konsultasi"
+                        href="/layanan"
                         onClick={() => setIsOpen(false)}
                         className={cn(
                           'flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-primary/10 hover:text-primary border-b border-border/60',
-                          pathname.startsWith('/konsultasi') && 'bg-primary text-primary-foreground'
+                          pathname.startsWith('/layanan') && 'bg-primary text-primary-foreground'
                         )}
                       >
                         <MessageSquareText className="h-5 w-5" />

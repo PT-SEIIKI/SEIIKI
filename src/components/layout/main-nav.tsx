@@ -196,9 +196,9 @@ export function MainNav() {
         <NavigationMenuItem>
           <NavigationMenuLink asChild className={cn(
             navigationMenuTriggerStyle(),
-            pathname.startsWith('/konsultasi') && 'bg-accent text-accent-foreground'
+            pathname.startsWith('/layanan') && 'bg-accent text-accent-foreground'
           )}>
-            <Link href="/konsultasi">Konsultasi</Link>
+            <Link href="/layanan">Konsultasi</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 

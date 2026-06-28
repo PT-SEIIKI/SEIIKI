@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
+import { notifyPaymentReceived } from '@/lib/whatsapp';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 
@@ -31,6 +32,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       where: { id },
       data: { paymentProofUrl, status: 'PEMBAYARAN_DITERIMA' },
     });
+
+    // Kirim notifikasi WhatsApp ke admin (non-blocking)
+    notifyPaymentReceived(submission).catch((err) =>
+      console.error('[WA] Notifikasi gagal:', err)
+    );
 
     return NextResponse.json(submission);
   } catch (error) {
