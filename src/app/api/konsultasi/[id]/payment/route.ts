@@ -30,7 +30,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     const submission = await prisma.konsultasiSubmission.update({
       where: { id },
-      data: { paymentProofUrl, status: 'PEMBAYARAN_DITERIMA' },
+      data: { paymentProofUrl },
     });
 
     // Kirim notifikasi WhatsApp ke admin (non-blocking)

@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Upload, CheckCircle, CreditCard, Building2 } from 'lucide-react';
+import { Loader2, Upload, CheckCircle, CreditCard, Building2, Wrench, MessageCircle, AlertCircle } from 'lucide-react';
 
 interface MetodePembayaran {
   id: string;
@@ -16,12 +16,17 @@ interface MetodePembayaran {
   deskripsi: string | null;
 }
 
+function formatRupiah(value: number) {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value);
+}
+
 function PembayaranContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const id = searchParams.get('id');
 
   const [methods, setMethods] = useState<MetodePembayaran[]>([]);
+  const [harga, setHarga] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -34,10 +39,17 @@ function PembayaranContent() {
       router.replace('/layanan');
       return;
     }
-    fetch('/api/metode-pembayaran')
-      .then(r => r.json())
-      .then(data => { setMethods(data); setIsLoading(false); })
-      .catch(() => setIsLoading(false));
+
+    Promise.all([
+      fetch('/api/metode-pembayaran').then(r => r.json()).catch(() => []),
+      fetch('/api/settings/public').then(r => r.json()).catch(() => ({})),
+    ]).then(([methodsData, settingsData]) => {
+      setMethods(Array.isArray(methodsData) ? methodsData : []);
+      if (settingsData?.harga_konsultasi) {
+        setHarga(Number(settingsData.harga_konsultasi));
+      }
+      setIsLoading(false);
+    });
   }, [id, router]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,11 +104,21 @@ function PembayaranContent() {
                 <CheckCircle className="h-12 w-12 text-green-600" />
               </div>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900">Pembayaran Terkirim!</h2>
+            <h2 className="text-2xl font-bold text-gray-900">Bukti Pembayaran Terkirim!</h2>
             <p className="text-muted-foreground">
-              Bukti pembayaran Anda telah berhasil diupload. Tim SEIIKI akan memverifikasi
-              dan menghubungi Anda melalui WhatsApp.
+              Bukti pembayaran Anda telah berhasil diupload dan sedang menunggu verifikasi admin.
             </p>
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-left space-y-2">
+              <p className="text-sm font-semibold text-blue-800">Apa yang terjadi selanjutnya?</p>
+              <div className="flex items-start gap-2 text-sm text-blue-700">
+                <Wrench className="h-4 w-4 mt-0.5 shrink-0" />
+                <span>Setelah verifikasi, teknisi kami akan datang ke lokasi Anda.</span>
+              </div>
+              <div className="flex items-start gap-2 text-sm text-blue-700">
+                <MessageCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                <span>Teknisi akan menghubungi Anda terlebih dahulu melalui nomor WhatsApp yang telah didaftarkan.</span>
+              </div>
+            </div>
             <Button className="w-full mt-4" onClick={() => router.push('/')}>
               Kembali ke Beranda
             </Button>
@@ -116,6 +138,26 @@ function PembayaranContent() {
           </p>
         </div>
 
+        {/* Nominal Pembayaran */}
+        {!isLoading && harga !== null && (
+          <Card className="shadow-lg border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+            <CardContent className="py-5">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <p className="text-sm font-medium text-blue-700">Nominal yang harus dibayar</p>
+                  <p className="text-3xl font-bold text-blue-900 mt-1">{formatRupiah(harga)}</p>
+                </div>
+                <Badge className="bg-blue-600 text-white text-sm px-3 py-1">Biaya Konsultasi</Badge>
+              </div>
+              <div className="mt-3 pt-3 border-t border-blue-200 flex items-start gap-2 text-sm text-blue-700">
+                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
+                <span>Setelah pembayaran diverifikasi, teknisi akan datang ke lokasi Anda dan menghubungi melalui WhatsApp.</span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Metode Pembayaran */}
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -165,6 +207,7 @@ function PembayaranContent() {
           </CardContent>
         </Card>
 
+        {/* Upload Bukti */}
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

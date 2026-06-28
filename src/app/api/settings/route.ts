@@ -7,7 +7,7 @@ export const runtime = 'nodejs';
 export async function GET(request: NextRequest) {
   try {
     const user = await getUser(request);
-    if (!user || user.role !== 'ADMIN') {
+    if (!user || !['ADMIN', 'ADMIN_KONSULTASI'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const settings = await prisma.setting.findMany();
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await getUser(request);
-    if (!user || user.role !== 'ADMIN') {
+    if (!user || !['ADMIN', 'ADMIN_KONSULTASI'].includes(user.role)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const body = await request.json();

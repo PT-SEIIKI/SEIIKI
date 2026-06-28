@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, Eye, MapPin, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2, Eye, MapPin, CheckCircle, Clock, ShieldCheck, FileImage } from 'lucide-react';
 import { AdminAuthGuard } from '@/components/auth/admin-auth-guard';
 
 interface Submission {
@@ -35,6 +36,11 @@ function DetailDialog({ submission, open, onClose, onStatusChange }: {
   onStatusChange: (id: string, status: string) => Promise<void>;
 }) {
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [verifySuccess, setVerifySuccess] = useState(false);
+
+  useEffect(() => {
+    setVerifySuccess(false);
+  }, [submission?.id, open]);
 
   if (!submission) return null;
 
@@ -50,6 +56,17 @@ function DetailDialog({ submission, open, onClose, onStatusChange }: {
     setUpdatingStatus(false);
   };
 
+  const handleVerify = async () => {
+    setUpdatingStatus(true);
+    await onStatusChange(submission.id, 'PEMBAYARAN_DITERIMA');
+    setVerifySuccess(true);
+    setUpdatingStatus(false);
+  };
+
+  const canVerify =
+    submission.status === 'MENUNGGU_PEMBAYARAN' &&
+    !!submission.paymentProofUrl;
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
@@ -57,6 +74,42 @@ function DetailDialog({ submission, open, onClose, onStatusChange }: {
           <DialogTitle>Detail Customer</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
+
+          {/* Verifikasi Pembayaran — prominent block */}
+          {canVerify && !verifySuccess && (
+            <div className="rounded-xl border-2 border-amber-200 bg-amber-50 p-4 space-y-3">
+              <div className="flex items-start gap-2">
+                <FileImage className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-amber-800">Bukti pembayaran telah diupload</p>
+                  <p className="text-sm text-amber-700 mt-0.5">
+                    Periksa bukti di bawah, lalu klik tombol verifikasi untuk mengonfirmasi pembayaran.
+                  </p>
+                </div>
+              </div>
+              <Button
+                className="w-full bg-green-600 hover:bg-green-700 text-white"
+                onClick={handleVerify}
+                disabled={updatingStatus}
+              >
+                {updatingStatus ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Memverifikasi...</>
+                ) : (
+                  <><ShieldCheck className="mr-2 h-4 w-4" /> Verifikasi Pembayaran</>
+                )}
+              </Button>
+            </div>
+          )}
+
+          {verifySuccess && (
+            <Alert className="border-green-200 bg-green-50">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800 font-medium">
+                Pembayaran berhasil diverifikasi!
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="font-medium text-muted-foreground">Nama</span>
@@ -88,22 +141,20 @@ function DetailDialog({ submission, open, onClose, onStatusChange }: {
             </div>
             <div>
               <span className="font-medium text-muted-foreground block mb-1">Status</span>
-              <div className="flex items-center gap-2">
-                {updatingStatus ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Select defaultValue={submission.status} onValueChange={handleStatusChange}>
-                    <SelectTrigger className="h-8 text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="MENUNGGU_PEMBAYARAN">Menunggu Pembayaran</SelectItem>
-                      <SelectItem value="PEMBAYARAN_DITERIMA">Pembayaran Diterima</SelectItem>
-                      <SelectItem value="SELESAI">Selesai</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              </div>
+              {updatingStatus ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Select value={submission.status} onValueChange={handleStatusChange}>
+                  <SelectTrigger className="h-8 text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="MENUNGGU_PEMBAYARAN">Menunggu Pembayaran</SelectItem>
+                    <SelectItem value="PEMBAYARAN_DITERIMA">Pembayaran Diterima</SelectItem>
+                    <SelectItem value="SELESAI">Selesai</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </div>
 
@@ -217,6 +268,7 @@ export default function CustomerPage() {
                       <TableHead>WhatsApp</TableHead>
                       <TableHead>Lokasi</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Bukti</TableHead>
                       <TableHead>Tanggal</TableHead>
                       <TableHead className="text-right">Aksi</TableHead>
                     </TableRow>
@@ -239,6 +291,15 @@ export default function CustomerPage() {
                               {STATUS_CONFIG[s.status]?.label || s.status}
                             </span>
                           </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {s.paymentProofUrl ? (
+                            <Badge variant="outline" className="text-xs border-amber-300 text-amber-700 bg-amber-50">
+                              <FileImage className="h-3 w-3 mr-1" /> Ada
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                           {new Date(s.createdAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
@@ -265,7 +326,7 @@ export default function CustomerPage() {
       <DetailDialog
         submission={selected}
         open={detailOpen}
-        onClose={() => setDetailOpen(false)}
+        onClose={() => { setDetailOpen(false); fetchData(); }}
         onStatusChange={handleStatusChange}
       />
     </AdminAuthGuard>
