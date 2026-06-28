@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { Loader2, Upload, CheckCircle, CreditCard, Building2, Wrench, MessageCircle, AlertCircle } from 'lucide-react';
 
 interface MetodePembayaran {
@@ -33,6 +35,7 @@ function PembayaranContent() {
   const [error, setError] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [selectedMethodId, setSelectedMethodId] = useState<string>('');
 
   useEffect(() => {
     if (!id) {
@@ -44,13 +47,17 @@ function PembayaranContent() {
       fetch('/api/metode-pembayaran').then(r => r.json()).catch(() => []),
       fetch('/api/settings/public').then(r => r.json()).catch(() => ({})),
     ]).then(([methodsData, settingsData]) => {
-      setMethods(Array.isArray(methodsData) ? methodsData : []);
+      const list = Array.isArray(methodsData) ? methodsData : [];
+      setMethods(list);
+      if (list.length > 0) setSelectedMethodId(list[0].id);
       if (settingsData?.harga_konsultasi) {
         setHarga(Number(settingsData.harga_konsultasi));
       }
       setIsLoading(false);
     });
   }, [id, router]);
+
+  const selectedMethod = methods.find(m => m.id === selectedMethodId) ?? null;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,18 +141,22 @@ function PembayaranContent() {
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900">Pembayaran Konsultasi</h1>
           <p className="text-muted-foreground mt-2">
-            Silakan transfer ke salah satu rekening berikut dan upload bukti pembayaran
+            Pilih metode pembayaran, transfer, lalu upload bukti pembayaran
           </p>
         </div>
 
         {/* Nominal Pembayaran */}
-        {!isLoading && harga !== null && (
+        {!isLoading && (
           <Card className="shadow-lg border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
             <CardContent className="py-5">
               <div className="flex items-center justify-between flex-wrap gap-3">
                 <div>
                   <p className="text-sm font-medium text-blue-700">Nominal yang harus dibayar</p>
-                  <p className="text-3xl font-bold text-blue-900 mt-1">{formatRupiah(harga)}</p>
+                  {harga !== null ? (
+                    <p className="text-3xl font-bold text-blue-900 mt-1">{formatRupiah(harga)}</p>
+                  ) : (
+                    <p className="text-lg font-semibold text-blue-800 mt-1">Hubungi admin untuk info harga</p>
+                  )}
                 </div>
                 <Badge className="bg-blue-600 text-white text-sm px-3 py-1">Biaya Konsultasi</Badge>
               </div>
@@ -157,16 +168,16 @@ function PembayaranContent() {
           </Card>
         )}
 
-        {/* Metode Pembayaran */}
+        {/* Metode Pembayaran — Dropdown */}
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="h-5 w-5 text-primary" />
               Metode Pembayaran
             </CardTitle>
-            <CardDescription>Transfer ke salah satu rekening di bawah ini</CardDescription>
+            <CardDescription>Pilih rekening tujuan transfer</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             {isLoading ? (
               <div className="flex justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -176,33 +187,46 @@ function PembayaranContent() {
                 Belum ada metode pembayaran. Hubungi admin.
               </p>
             ) : (
-              <div className="space-y-4">
-                {methods.map((method) => (
-                  <div
-                    key={method.id}
-                    className="border rounded-xl p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200"
-                  >
+              <>
+                <div className="space-y-2">
+                  <Label>Pilih Bank / Rekening</Label>
+                  <Select value={selectedMethodId} onValueChange={setSelectedMethodId}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Pilih metode pembayaran..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {methods.map(m => (
+                        <SelectItem key={m.id} value={m.id}>
+                          {m.namaBank} — {m.nomorRekening}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {selectedMethod && (
+                  <div className="border rounded-xl p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
                     <div className="flex items-start gap-3">
                       <div className="bg-blue-100 rounded-lg p-2">
                         <Building2 className="h-5 w-5 text-blue-700" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-gray-900">{method.namaBank}</span>
+                          <span className="font-bold text-gray-900">{selectedMethod.namaBank}</span>
                           <Badge variant="secondary" className="text-xs">Transfer Bank</Badge>
                         </div>
                         <p className="text-2xl font-mono font-bold text-blue-800 mt-1 tracking-wider">
-                          {method.nomorRekening}
+                          {selectedMethod.nomorRekening}
                         </p>
-                        <p className="text-sm text-gray-700 mt-1">a/n {method.namaPemilik}</p>
-                        {method.deskripsi && (
-                          <p className="text-xs text-muted-foreground mt-1">{method.deskripsi}</p>
+                        <p className="text-sm text-gray-700 mt-1">a/n {selectedMethod.namaPemilik}</p>
+                        {selectedMethod.deskripsi && (
+                          <p className="text-xs text-muted-foreground mt-1">{selectedMethod.deskripsi}</p>
                         )}
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </CardContent>
         </Card>
