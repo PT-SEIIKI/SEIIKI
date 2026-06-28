@@ -37,16 +37,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,
     domains: ['localhost'], // Tambahkan untuk development
   },
-  allowedDevOrigins: [
-    '*.replit.dev',
-    '*.repl.co',
-    '*.pike.replit.dev',
-    '*.sisko.replit.dev',
-    '*.picard.replit.dev',
-    '*.spock.replit.dev',
-    '*.kirk.replit.dev',
-    '*.janeway.replit.dev',
-  ],
+  allowedDevOrigins: ['*'],
   compress: true,
   poweredByHeader: false,
   async headers() {
