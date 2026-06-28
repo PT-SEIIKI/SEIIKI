@@ -12,14 +12,22 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     const { id } = await params;
     const { status } = await request.json();
 
-    const validStatuses = ['MENUNGGU_PEMBAYARAN', 'PEMBAYARAN_DITERIMA', 'SELESAI'];
+    const validStatuses = ['MENUNGGU_PEMBAYARAN', 'PEMBAYARAN_DITERIMA'];
     if (!validStatuses.includes(status)) {
       return NextResponse.json({ error: 'Status tidak valid' }, { status: 400 });
     }
 
+    let nominal: number | undefined;
+    if (status === 'PEMBAYARAN_DITERIMA') {
+      const hargaSetting = await prisma.setting.findUnique({ where: { key: 'harga_konsultasi' } });
+      if (hargaSetting?.value) {
+        nominal = parseInt(hargaSetting.value, 10) || 0;
+      }
+    }
+
     const submission = await prisma.konsultasiSubmission.update({
       where: { id },
-      data: { status },
+      data: { status, ...(nominal !== undefined ? { nominal } : {}) },
     });
 
     return NextResponse.json(submission);

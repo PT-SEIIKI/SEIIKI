@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Eye, MapPin, CheckCircle, Clock, ShieldCheck, FileImage } from 'lucide-react';
+import { Loader2, Eye, MapPin, CheckCircle, Clock, ShieldCheck, FileImage, ImageOff } from 'lucide-react';
 import { AdminAuthGuard } from '@/components/auth/admin-auth-guard';
 
 interface Submission {
@@ -20,14 +20,20 @@ interface Submission {
   alamatLokasi: string | null;
   status: string;
   paymentProofUrl: string | null;
+  nominal: number | null;
   createdAt: string;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline'; icon: React.ReactNode }> = {
   MENUNGGU_PEMBAYARAN: { label: 'Menunggu Pembayaran', variant: 'secondary', icon: <Clock className="h-3 w-3" /> },
   PEMBAYARAN_DITERIMA: { label: 'Pembayaran Diterima', variant: 'default', icon: <CheckCircle className="h-3 w-3" /> },
-  SELESAI: { label: 'Selesai', variant: 'outline', icon: <CheckCircle className="h-3 w-3" /> },
 };
+
+function toApiUrl(url: string | null): string | null {
+  if (!url) return null;
+  if (url.startsWith('/uploads/')) return url.replace('/uploads/', '/api/uploads/');
+  return url;
+}
 
 function DetailDialog({ submission, open, onClose, onStatusChange }: {
   submission: Submission | null;
@@ -37,9 +43,11 @@ function DetailDialog({ submission, open, onClose, onStatusChange }: {
 }) {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [verifySuccess, setVerifySuccess] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     setVerifySuccess(false);
+    setImgError(false);
   }, [submission?.id, open]);
 
   if (!submission) return null;
@@ -49,6 +57,7 @@ function DetailDialog({ submission, open, onClose, onStatusChange }: {
     : null;
 
   const mapsLink = `https://maps.google.com/?q=${submission.latitude},${submission.longitude}`;
+  const proofApiUrl = toApiUrl(submission.paymentProofUrl);
 
   const handleStatusChange = async (newStatus: string) => {
     setUpdatingStatus(true);
@@ -75,7 +84,6 @@ function DetailDialog({ submission, open, onClose, onStatusChange }: {
         </DialogHeader>
         <div className="space-y-4">
 
-          {/* Verifikasi Pembayaran — prominent block */}
           {canVerify && !verifySuccess && (
             <div className="rounded-xl border-2 border-amber-200 bg-amber-50 p-4 space-y-3">
               <div className="flex items-start gap-2">
@@ -151,24 +159,46 @@ function DetailDialog({ submission, open, onClose, onStatusChange }: {
                   <SelectContent>
                     <SelectItem value="MENUNGGU_PEMBAYARAN">Menunggu Pembayaran</SelectItem>
                     <SelectItem value="PEMBAYARAN_DITERIMA">Pembayaran Diterima</SelectItem>
-                    <SelectItem value="SELESAI">Selesai</SelectItem>
                   </SelectContent>
                 </Select>
               )}
             </div>
           </div>
 
-          {submission.paymentProofUrl && (
+          {proofApiUrl && (
             <div>
-              <span className="font-medium text-muted-foreground text-sm">Bukti Pembayaran</span>
-              <a
-                href={submission.paymentProofUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-1 block text-primary text-sm hover:underline"
-              >
-                Lihat Bukti Pembayaran →
-              </a>
+              <span className="font-medium text-muted-foreground text-sm block mb-2">Bukti Pembayaran</span>
+              {imgError ? (
+                <div className="flex flex-col items-center justify-center gap-2 border rounded-lg p-6 bg-muted/30 text-muted-foreground">
+                  <ImageOff className="h-8 w-8" />
+                  <p className="text-sm">Gagal memuat gambar</p>
+                  <a
+                    href={proofApiUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary text-xs underline"
+                  >
+                    Buka langsung →
+                  </a>
+                </div>
+              ) : (
+                <div className="relative">
+                  <img
+                    src={proofApiUrl}
+                    alt="Bukti Pembayaran"
+                    className="w-full rounded-lg border object-contain max-h-64"
+                    onError={() => setImgError(true)}
+                  />
+                  <a
+                    href={proofApiUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-block text-primary text-xs underline"
+                  >
+                    Buka di tab baru →
+                  </a>
+                </div>
+              )}
             </div>
           )}
 
@@ -238,7 +268,6 @@ export default function CustomerPage() {
               <SelectItem value="ALL">Semua Status</SelectItem>
               <SelectItem value="MENUNGGU_PEMBAYARAN">Menunggu Pembayaran</SelectItem>
               <SelectItem value="PEMBAYARAN_DITERIMA">Pembayaran Diterima</SelectItem>
-              <SelectItem value="SELESAI">Selesai</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -146,6 +146,7 @@ model KonsultasiSubmission {
   alamatLokasi  String?
   status        KonsultasiStatus @default(MENUNGGU_PEMBAYARAN)
   paymentProofUrl String?
+  nominal       Int?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

@@ -11,7 +11,7 @@ import {
   SidebarGroupLabel,
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/icons';
-import { MessageSquareText, ClipboardList, Settings, LayoutDashboard, Users, CreditCard, Package } from 'lucide-react';
+import { MessageSquareText, ClipboardList, Settings, LayoutDashboard, Users, CreditCard, Package, History } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/auth-context';
@@ -28,6 +28,7 @@ export function DashboardSidebar() {
   const layananLinks = [
     { href: '/dashboard/konsultasi', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" />, exact: true },
     { href: '/dashboard/konsultasi/customer', label: 'Customer', icon: <Users className="h-4 w-4" />, exact: false },
+    { href: '/dashboard/konsultasi/riwayat-transaksi', label: 'Riwayat Transaksi', icon: <History className="h-4 w-4" />, exact: false },
     { href: '/dashboard/konsultasi/metode-pembayaran', label: 'Metode Pembayaran', icon: <CreditCard className="h-4 w-4" />, exact: false },
     { href: '/dashboard/konsultasi/produk', label: 'Produk', icon: <Package className="h-4 w-4" />, exact: false },
     { href: '/dashboard/konsultasi/setting', label: 'Setting', icon: <Settings className="h-4 w-4" />, exact: false },
