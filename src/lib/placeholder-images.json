@@ -1,0 +1,70 @@
+{
+  "placeholderImages": [
+    {
+      "id": "home-hero-1",
+      "description": "An electrical engineer inspecting a modern power facility at sunset.",
+      "imageUrl": "https://images.unsplash.com/photo-1581092921461-eab62e97a780?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxlbGVjdHJpY2FsJTIwZW5naW5lZXJ8ZW58MHx8fHwxNzU4OTk4OTk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electrical engineer"
+    },
+    {
+      "id": "home-hero-2",
+      "description": "High-voltage power lines and transmission towers at dusk.",
+      "imageUrl": "https://images.unsplash.com/photo-1550340499-a6c60fc8287c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwb3dlciUyMGxpbmVzfGVufDB8fHx8MTc1ODk5ODk5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "power lines"
+    },
+    {
+      "id": "home-hero-3",
+      "description": "A wind farm with turbines generating clean energy.",
+      "imageUrl": "https://images.unsplash.com/photo-1549480017-d76466a4073b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3aW5kJTIwdHVyYmluZXN8ZW58MHx8fHwxNzU4OTk4OTk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wind turbines"
+    },
+    {
+      "id": "about-us",
+      "description": "A diverse team of professionals in a modern office collaborating.",
+      "imageUrl": "https://images.unsplash.com/photo-1568992687947-868a62a9f521?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx0ZWFtJTIwbWVldGluZ3xlbnwwfHx8fDE3NTg4ODY3NTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "team meeting"
+    },
+    {
+      "id": "gallery-1",
+      "description": "Close-up of an electrician's hands working on a complex wiring panel.",
+      "imageUrl": "https://images.unsplash.com/photo-1597502310092-31cdaa35b46d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxlbGVjdHJpY2lhbiUyMHdpcmluZ3xlbnwwfHx8fDE3NTg5OTg5OTZ8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageHint": "electrician wiring"
+    },
+    {
+      "id": "gallery-2",
+      "description": "A certified technician handing a certificate to a satisfied client.",
+      "imageUrl": "https://images.unsplash.com/photo-1577722422778-cdfac7de2493?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjZXJ0aWZpY2F0ZSUyMGNsaWVudHxlbnwwfHx8fDE3NTg5OTg5OTZ8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageHint": "certificate client"
+    },
+    {
+      "id": "gallery-3",
+      "description": "Wide shot of a large industrial facility with complex electrical infrastructure.",
+      "imageUrl": "https://images.unsplash.com/photo-1730652967853-afa27b913e99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxpbmR1c3RyaWFsJTIwZmFjaWxpdHl8ZW58MHx8fHwxNzU4OTY1OTkwfDA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageHint": "industrial facility"
+    },
+    {
+      "id": "gallery-4",
+      "description": "A technician using a multimeter to test an electrical outlet.",
+      "imageUrl": "https://images.unsplash.com/photo-1630959302910-b4eca47cc44f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx0ZWNobmljaWFuJTIwdGVzdGluZ3xlbnwwfHx8fDE3NTg5OTg5OTZ8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageHint": "technician testing"
+    },
+    {
+      "id": "gallery-5",
+      "description": "A team performing safety checks on power lines.",
+      "imageUrl": "https://images.unsplash.com/photo-1718197030736-51e5bb5382a5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzYWZldHklMjBjaGVja3xlbnwwfHx8fDE3NTg5OTg5OTZ8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageHint": "safety check"
+    },
+    {
+      "id": "gallery-6",
+      "description": "A newly constructed building with its electrical system being inspected.",
+      "imageUrl": "https://images.unsplash.com/photo-1722876720000-f39b65b7d4a1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxidWlsZGluZyUyMGluc3BlY3Rpb258ZW58MHx8fHwxNzU4OTIxNDgyfDA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageHint": "building inspection"
+    },
+    {
+      "id": "contact-hero",
+      "description": "Modern office building exterior on a sunny day.",
+      "imageUrl": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBidWlsZGluZ3xlbnwwfHx8fDE3NTg4OTQ1MzZ8MA&ixlibrb-4.1.0&q=80&w=1080",
+      "imageHint": "office building"
+    }
+  ]
+}

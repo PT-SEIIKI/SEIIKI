@@ -1,0 +1,227 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Content Management Models
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  createdContent Content[]
+}
+
+model Content {
+  id          String      @id @default(cuid())
+  title       String
+  slug        String      @unique
+  description String?
+  content     String?     @db.Text
+  imageUrl    String?
+  type        ContentType
+  status      ContentStatus @default(DRAFT)
+  featured    Boolean     @default(false)
+  order       Int         @default(0)
+  seoTitle    String?
+  seoDesc     String?
+  
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  // Relations
+  createdBy   String?
+  creator     User?       @relation(fields: [createdBy], references: [id])
+  
+  // Content sections
+  sections    ContentSection[]
+}
+
+model ContentSection {
+  id        String  @id @default(cuid())
+  title     String
+  subtitle  String?
+  text      String? @db.Text
+  imageUrl  String?
+  order     Int     @default(0)
+  
+  // Relations
+  contentId String
+  content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+}
+
+model HeroSlide {
+  id          String  @id @default(cuid())
+  title       String
+  subtitle    String?
+  description String?
+  imageUrl    String
+  buttonText  String?
+  buttonUrl   String?
+  order       Int     @default(0)
+  active      Boolean @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Service {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  icon        String?
+  imageUrl    String?
+  featured    Boolean @default(false)
+  order       Int     @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Statistics {
+  id    String @id @default(cuid())
+  label String
+  value String
+  order Int    @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactInfo {
+  id      String @id @default(cuid())
+  type    ContactType
+  label   String
+  value   String
+  icon    String?
+  order   Int    @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// SLO Application Models (existing)
+model SloApplication {
+  id                String      @id @default(cuid())
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  
+  // Applicant Data
+  applicantName     String
+  applicantIdNumber String      @unique
+  applicantPhone    String
+  applicantEmail    String      @unique
+
+  // Installation Data
+  installationAddress String
+  installationType    InstallationType
+  powerRating         Int // in VA
+  
+  // Status
+  status            ApplicationStatus @default(PENDING)
+  registrationNumber String?           @unique // Generated after approval
+
+  notes             String?
+}
+
+// Konsultasi Models
+model KonsultasiSubmission {
+  id            String   @id @default(cuid())
+  nama          String
+  noWhatsapp    String
+  latitude      Float
+  longitude     Float
+  alamatLokasi  String?
+  status        KonsultasiStatus @default(MENUNGGU_PEMBAYARAN)
+  paymentProofUrl String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model MetodePembayaran {
+  id            String   @id @default(cuid())
+  namaBank      String
+  nomorRekening String
+  namaPemilik   String
+  deskripsi     String?
+  isActive      Boolean  @default(true)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// INTEK Models
+model IntekSubmission {
+  id                    String   @id @default(cuid())
+  namaInstalasi         String
+  dayaTerpasang         String
+  alamat                String
+  noHp                  String
+  tanggalMulai          DateTime
+  tenagaTeknikLapangan  String
+  tenagaTeknikSistem    String
+  jenisProject          String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  EDITOR
+  USER
+  ADMIN_KONSULTASI
+  ADMIN_INTEK
+}
+
+enum ContentType {
+  PAGE
+  POST
+  SERVICE
+  GALLERY
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContactType {
+  PHONE
+  EMAIL
+  ADDRESS
+  SOCIAL
+}
+
+enum ApplicationStatus {
+  PENDING
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  CERTIFIED
+}
+
+enum InstallationType {
+  TR_RUMAH
+  TR_BISNIS
+  TM_INDUSTRI
+}
+
+enum KonsultasiStatus {
+  MENUNGGU_PEMBAYARAN
+  PEMBAYARAN_DITERIMA
+  SELESAI
+}
