@@ -17,7 +17,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { Logo } from '@/components/icons';
-import { GoogleLoginButton } from '@/components/auth/google-button';
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +24,6 @@ export default function LoginPage() {
   const { login, user } = useAuth();
   const router = useRouter();
 
-  // Redirect if already logged in
   if (user) {
     if (user.role === 'ADMIN_KONSULTASI') { router.push('/dashboard/konsultasi'); return null; }
     if (user.role === 'ADMIN_INTEK') { router.push('/dashboard/intek'); return null; }
@@ -75,17 +73,6 @@ export default function LoginPage() {
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          
-          <GoogleLoginButton label="Masuk dengan Google" />
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">atau</span>
-            </div>
-          </div>
 
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">

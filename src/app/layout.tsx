@@ -10,9 +10,6 @@ import { generateMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = {
   ...generateMetadata({ canonical: '/' }),
-  verification: {
-    google: 'Rv9QZvwHuzyTgfaQJxQ8OHVGWQASV_jlFAVey7XWymY',
-  },
 };
 
 

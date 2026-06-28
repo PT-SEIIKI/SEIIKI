@@ -112,9 +112,6 @@ export function generateMetadata({
       shortcut: '/favicon.ico',
       apple: siteConfig.logo,
     },
-    verification: {
-      google: 'Rv9QZvwHuzyTgfaQJxQ8OHVGWQASV_jlFAVey7XWymY',
-    },
   };
 }
 
