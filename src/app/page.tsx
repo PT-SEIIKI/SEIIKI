@@ -11,7 +11,6 @@ import AboutSection from '@/components/sections/about-section';
 import GallerySection from '@/components/sections/gallery-section';
 import PartnersSection from '@/components/sections/partners-section';
 import ServicesGrid from '@/components/sections/services-grid';
-import AchievementsSection from '@/components/sections/achievements-section';
 import CTASection from '@/components/sections/cta-section';
 import AwardsSection from '@/components/sections/awards-section';
 import ImportanceSection from '@/components/sections/importance-section';
@@ -371,6 +370,7 @@ export default function Home() {
         <ServicesGrid services={services} />
         <TestimonialSection />
         <CTASection />
+
       </div>
     </>
   );
