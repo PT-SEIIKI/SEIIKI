@@ -185,6 +185,88 @@ async function run() {
     console.log('✅ Metode pembayaran created');
   }
 
+  // Seed produk
+  const produkCount = await prisma.produk.count();
+  if (produkCount === 0) {
+    await prisma.produk.createMany({
+      data: [
+        {
+          nama: 'Paket SLO Tegangan Rendah (TR) Rumah Tinggal',
+          harga: 350000,
+          deskripsi: 'Layanan Sertifikat Laik Operasi untuk instalasi listrik tegangan rendah pada rumah tinggal daya 450 VA hingga 5.500 VA. Termasuk pemeriksaan, pengujian, dan penerbitan sertifikat resmi yang diakui Kementerian ESDM.',
+          kategori: 'SLO Tegangan Rendah',
+          imageUrl: null,
+          isActive: true,
+          order: 1,
+        },
+        {
+          nama: 'Paket SLO Tegangan Rendah (TR) Bisnis & Komersial',
+          harga: 750000,
+          deskripsi: 'Layanan Sertifikat Laik Operasi untuk instalasi listrik tegangan rendah pada gedung bisnis, ruko, dan bangunan komersial daya 6.600 VA hingga 197 kVA. Proses cepat dengan tenaga teknik bersertifikat.',
+          kategori: 'SLO Tegangan Rendah',
+          imageUrl: null,
+          isActive: true,
+          order: 2,
+        },
+        {
+          nama: 'Paket SLO Tegangan Menengah (TM) Industri',
+          harga: 5000000,
+          deskripsi: 'Layanan Sertifikat Laik Operasi untuk instalasi tenaga listrik tegangan menengah pada kawasan industri, pabrik, dan fasilitas besar di atas 197 kVA. Ditangani oleh tim inspektor berpengalaman dan terakreditasi.',
+          kategori: 'SLO Tegangan Menengah',
+          imageUrl: '/Instalasi Pemamfaatan Tenaga Listrik Tegangan Menengah.png',
+          isActive: true,
+          order: 3,
+        },
+        {
+          nama: 'Sertifikasi PLTD (Pembangkit Listrik Tenaga Diesel)',
+          harga: 8500000,
+          deskripsi: 'Layanan inspeksi dan sertifikasi legalitas Pembangkit Listrik Tenaga Diesel. Mencakup pemeriksaan instalasi, pengujian kelaikan operasi, dan penerbitan sertifikat resmi sesuai standar Kementerian ESDM.',
+          kategori: 'Pembangkit',
+          imageUrl: '/Pembangkit Listrik Tenaga Diesel.png',
+          isActive: true,
+          order: 4,
+        },
+        {
+          nama: 'Sertifikasi PLTS (Pembangkit Listrik Tenaga Surya)',
+          harga: 6500000,
+          deskripsi: 'Layanan inspeksi dan sertifikasi legalitas Pembangkit Listrik Tenaga Surya (solar panel). Meliputi pemeriksaan sistem PV, inverter, instalasi, dan kelaikan operasi sesuai regulasi yang berlaku.',
+          kategori: 'Pembangkit',
+          imageUrl: '/Pembangkit Listrik Tenaga Surya.png',
+          isActive: true,
+          order: 5,
+        },
+        {
+          nama: 'Paket Konsultasi Teknik Kelistrikan',
+          harga: 500000,
+          deskripsi: 'Layanan konsultasi teknik untuk perencanaan instalasi kelistrikan, pemenuhan persyaratan regulasi, dan pendampingan proses perizinan. Ditangani oleh tenaga ahli kelistrikan berpengalaman.',
+          kategori: 'Konsultasi',
+          imageUrl: null,
+          isActive: true,
+          order: 6,
+        },
+        {
+          nama: 'Inspeksi & Audit Instalasi Listrik',
+          harga: 1200000,
+          deskripsi: 'Layanan audit menyeluruh terhadap instalasi listrik existing untuk menilai kelaikan, keamanan, dan kesesuaian dengan standar SNI dan regulasi Kementerian ESDM. Cocok untuk gedung lama yang belum punya SLO.',
+          kategori: 'Inspeksi',
+          imageUrl: null,
+          isActive: true,
+          order: 7,
+        },
+        {
+          nama: 'Perpanjangan & Pembaruan SLO',
+          harga: 400000,
+          deskripsi: 'Layanan perpanjangan Sertifikat Laik Operasi yang telah habis masa berlakunya. Termasuk pemeriksaan kondisi terkini instalasi listrik dan penerbitan sertifikat baru sesuai ketentuan yang berlaku.',
+          kategori: 'SLO Tegangan Rendah',
+          imageUrl: null,
+          isActive: true,
+          order: 8,
+        },
+      ],
+    });
+    console.log('✅ Produk created');
+  }
+
   console.log('🎉 Database seeded successfully!');
   console.log(`👤 Admin login: ${adminEmail} / ${adminPassword}`);
   console.log(`👤 Admin Konsultasi: ${adminKonsultasiEmail} / konsultasi123`);
