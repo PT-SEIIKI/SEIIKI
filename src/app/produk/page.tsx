@@ -1,15 +1,11 @@
 import { prisma } from '@/lib/db';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Package, Zap } from 'lucide-react';
+import ProdukGrid from './ProdukGrid';
 
 export const metadata = {
   title: 'Produk | SEIIKI',
   description: 'Produk-produk kelistrikan berkualitas dari PT. Solusi Energi Kelistrikan Indonesia',
 };
-
-function formatRupiah(value: number) {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value);
-}
 
 export default async function ProdukPage() {
   const produkList = await prisma.produk.findMany({
@@ -40,35 +36,7 @@ export default async function ProdukPage() {
             <p className="text-sm mt-1">Silakan kunjungi kembali nanti.</p>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {produkList.map(produk => (
-              <Card key={produk.id} className="flex flex-col overflow-hidden hover:shadow-lg transition-shadow duration-200 border-0 shadow-md">
-                <div className="relative bg-gradient-to-br from-slate-100 to-slate-200 aspect-video flex items-center justify-center">
-                  {produk.imageUrl ? (
-                    <img
-                      src={produk.imageUrl}
-                      alt={produk.nama}
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <Package className="h-16 w-16 text-slate-400" />
-                  )}
-                </div>
-
-                <CardHeader className="pb-2 pt-4">
-                  <h3 className="font-bold text-gray-900 leading-snug">{produk.nama}</h3>
-                </CardHeader>
-
-                <CardContent className="flex-1 pb-2">
-                  <p className="text-sm text-muted-foreground line-clamp-3">{produk.deskripsi}</p>
-                </CardContent>
-
-                <CardFooter className="pt-3 border-t">
-                  <p className="text-lg font-bold text-blue-700">{formatRupiah(produk.harga)}</p>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+          <ProdukGrid produkList={produkList} />
         )}
       </div>
     </main>
