@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Loader2, Upload, CheckCircle, CreditCard, Building2, Wrench, MessageCircle, AlertCircle } from 'lucide-react';
+import { Loader2, Upload, CheckCircle, CreditCard, Building2, MessageCircle, AlertCircle } from 'lucide-react';
 
 interface MetodePembayaran {
   id: string;
@@ -119,21 +119,10 @@ function PembayaranContent() {
             <p className="text-muted-foreground">
               Bukti pembayaran Anda telah berhasil diupload dan sedang menunggu verifikasi admin.
             </p>
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-left space-y-2">
-              <p className="text-sm font-semibold text-blue-800">Apa yang terjadi selanjutnya?</p>
-              <div className="flex items-start gap-2 text-sm text-blue-700">
-                <Wrench className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Setelah verifikasi, teknisi kami akan datang ke lokasi Anda.</span>
-              </div>
-              <div className="flex items-start gap-2 text-sm text-blue-700">
-                <MessageCircle className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Teknisi akan menghubungi Anda terlebih dahulu melalui nomor WhatsApp yang telah didaftarkan.</span>
-              </div>
-            </div>
-            {waAdminNumber && (
+            {waAdminNumber ? (
               <a
                 href={`https://wa.me/${waAdminNumber.replace(/\D/g, '')}?text=${encodeURIComponent(
-                  'Halo Admin SEIIKI, saya telah mengunggah bukti pembayaran konsultasi. Mohon segera dicek di dashboard admin.'
+                  `Halo Admin SEIIKI, saya telah mengunggah bukti pembayaran konsultasi. ID: ${id}. Mohon segera dicek di dashboard admin.`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -144,6 +133,10 @@ function PembayaranContent() {
                   Beritahu Admin via WhatsApp
                 </Button>
               </a>
+            ) : (
+              <p className="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg p-3">
+                Nomor WhatsApp admin belum diatur. Silakan atur di Dashboard &gt; Konsultasi &gt; Setting.
+              </p>
             )}
             <Button className="w-full mt-2" variant="outline" onClick={() => router.push('/')}>
               Kembali ke Beranda
