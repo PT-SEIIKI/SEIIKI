@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { MainNav, profileComponents, sloComponents, legalitasComponents } from './main-nav';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/icons';
-import { Menu, X, Home, Folder, ShieldCheck, Image as ImageIcon, Briefcase, Mail, Scale, MessageSquareText, ClipboardList, LogIn, UserPlus, UserCircle, LogOut } from 'lucide-react';
+import { Menu, X, Home, Folder, ShieldCheck, Image as ImageIcon, Briefcase, Mail, Scale, MessageSquareText, ClipboardList, LogIn, UserCircle, LogOut } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -112,12 +112,6 @@ export function Header() {
                     <Link href="/login">
                       <LogIn className="h-4 w-4 mr-1" />
                       Masuk
-                    </Link>
-                  </Button>
-                  <Button asChild size="sm">
-                    <Link href="/register">
-                      <UserPlus className="h-4 w-4 mr-1" />
-                      Daftar
                     </Link>
                   </Button>
                 </>
@@ -290,17 +284,11 @@ export function Header() {
                         </Button>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 gap-2">
                         <Button asChild variant="outline" className="w-full" onClick={() => setIsOpen(false)}>
                           <Link href="/login">
                             <LogIn className="h-4 w-4 mr-1" />
                             Masuk
-                          </Link>
-                        </Button>
-                        <Button asChild className="w-full" onClick={() => setIsOpen(false)}>
-                          <Link href="/register">
-                            <UserPlus className="h-4 w-4 mr-1" />
-                            Daftar
                           </Link>
                         </Button>
                       </div>
