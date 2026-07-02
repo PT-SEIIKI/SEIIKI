@@ -238,9 +238,6 @@ function PembayaranContent() {
                           {selectedMethod.nomorRekening}
                         </p>
                         <p className="text-sm text-gray-700 mt-1">a/n {selectedMethod.namaPemilik}</p>
-                        {selectedMethod.deskripsi && (
-                          <p className="text-xs text-muted-foreground mt-1">{selectedMethod.deskripsi}</p>
-                        )}
                       </div>
                     </div>
                   </div>
