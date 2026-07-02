@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { Loader2, Upload, CheckCircle, CreditCard, Building2, Wrench, MessageCircle, AlertCircle } from 'lucide-react';
+import { Loader2, Upload, CheckCircle, CreditCard, Building2, Wrench, MessageCircle } from 'lucide-react';
 
 interface MetodePembayaran {
   id: string;
@@ -18,17 +18,12 @@ interface MetodePembayaran {
   deskripsi: string | null;
 }
 
-function formatRupiah(value: number) {
-  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(value);
-}
-
 function PembayaranContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const id = searchParams.get('id');
 
   const [methods, setMethods] = useState<MetodePembayaran[]>([]);
-  const [harga, setHarga] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -43,18 +38,15 @@ function PembayaranContent() {
       return;
     }
 
-    Promise.all([
-      fetch('/api/metode-pembayaran').then(r => r.json()).catch(() => []),
-      fetch('/api/settings/public').then(r => r.json()).catch(() => ({})),
-    ]).then(([methodsData, settingsData]) => {
-      const list = Array.isArray(methodsData) ? methodsData : [];
-      setMethods(list);
-      if (list.length > 0) setSelectedMethodId(list[0].id);
-      if (settingsData?.harga_konsultasi) {
-        setHarga(Number(settingsData.harga_konsultasi));
-      }
-      setIsLoading(false);
-    });
+    fetch('/api/metode-pembayaran')
+      .then(r => r.json())
+      .catch(() => [])
+      .then((methodsData) => {
+        const list = Array.isArray(methodsData) ? methodsData : [];
+        setMethods(list);
+        if (list.length > 0) setSelectedMethodId(list[0].id);
+        setIsLoading(false);
+      });
   }, [id, router]);
 
   const selectedMethod = methods.find(m => m.id === selectedMethodId) ?? null;
@@ -144,29 +136,6 @@ function PembayaranContent() {
             Pilih metode pembayaran, transfer, lalu upload bukti pembayaran
           </p>
         </div>
-
-        {/* Nominal Pembayaran */}
-        {!isLoading && (
-          <Card className="shadow-lg border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-            <CardContent className="py-5">
-              <div className="flex items-center justify-between flex-wrap gap-3">
-                <div>
-                  <p className="text-sm font-medium text-blue-700">Nominal yang harus dibayar</p>
-                  {harga !== null ? (
-                    <p className="text-3xl font-bold text-blue-900 mt-1">{formatRupiah(harga)}</p>
-                  ) : (
-                    <p className="text-lg font-semibold text-blue-800 mt-1">Hubungi admin untuk info harga</p>
-                  )}
-                </div>
-                <Badge className="bg-blue-600 text-white text-sm px-3 py-1">Biaya Konsultasi</Badge>
-              </div>
-              <div className="mt-3 pt-3 border-t border-blue-200 flex items-start gap-2 text-sm text-blue-700">
-                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Setelah pembayaran diverifikasi, teknisi akan datang ke lokasi Anda dan menghubungi melalui WhatsApp.</span>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Metode Pembayaran — Dropdown */}
         <Card className="shadow-lg">
