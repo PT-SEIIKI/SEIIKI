@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db';
 
 export const runtime = 'nodejs';
 
-const PUBLIC_KEYS = ['harga_konsultasi'];
+const PUBLIC_KEYS = ['harga_konsultasi', 'wa_admin_number'];
 
 export async function GET() {
   try {

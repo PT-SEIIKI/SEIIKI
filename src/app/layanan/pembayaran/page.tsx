@@ -29,6 +29,7 @@ function PembayaranContent() {
 
   const [methods, setMethods] = useState<MetodePembayaran[]>([]);
   const [harga, setHarga] = useState<number | null>(null);
+  const [waAdminNumber, setWaAdminNumber] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -52,6 +53,9 @@ function PembayaranContent() {
       if (list.length > 0) setSelectedMethodId(list[0].id);
       if (settingsData?.harga_konsultasi) {
         setHarga(Number(settingsData.harga_konsultasi));
+      }
+      if (settingsData?.wa_admin_number) {
+        setWaAdminNumber(String(settingsData.wa_admin_number));
       }
       setIsLoading(false);
     });
@@ -126,7 +130,22 @@ function PembayaranContent() {
                 <span>Teknisi akan menghubungi Anda terlebih dahulu melalui nomor WhatsApp yang telah didaftarkan.</span>
               </div>
             </div>
-            <Button className="w-full mt-4" onClick={() => router.push('/')}>
+            {waAdminNumber && (
+              <a
+                href={`https://wa.me/${waAdminNumber.replace(/\D/g, '')}?text=${encodeURIComponent(
+                  'Halo Admin SEIIKI, saya telah mengunggah bukti pembayaran konsultasi. Mohon segera dicek di dashboard admin.'
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <Button className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white">
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                  Beritahu Admin via WhatsApp
+                </Button>
+              </a>
+            )}
+            <Button className="w-full mt-2" variant="outline" onClick={() => router.push('/')}>
               Kembali ke Beranda
             </Button>
           </CardContent>
