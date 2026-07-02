@@ -33,6 +33,7 @@ interface Service {
   title: string;
   description: string;
   icon?: string;
+  imageUrl?: string;
   featured: boolean;
   order: number;
 }

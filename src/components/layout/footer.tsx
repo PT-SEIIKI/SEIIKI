@@ -13,7 +13,7 @@ export function Footer() {
     return null;
   }
   
-  const handleSubscribe = (e) => {
+  const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle newsletter subscription
   };

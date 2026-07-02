@@ -180,7 +180,16 @@ export function ContactInfoForm({ contactInfo, onSuccess, mode }: ContactInfoFor
           </div>
           
           <div>
-          
+            <Label htmlFor="value">Nilai*</Label>
+            <Input
+              id="value"
+              value={formData.value}
+              onChange={(e) => setFormData({ ...formData, value: e.target.value })}
+              placeholder="contoh: +62 812-3456-7890"
+              required
+            />
+          </div>
+
           <div>
             <Label htmlFor="order">Urutan</Label>
             <Input
