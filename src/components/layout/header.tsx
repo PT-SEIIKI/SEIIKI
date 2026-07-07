@@ -3,29 +3,19 @@ import Link from 'next/link';
 import { MainNav, profileComponents, sloComponents, legalitasComponents } from './main-nav';
 import { Button } from '@/components/ui/button';
 import { Logo } from '@/components/icons';
-import { Menu, X, Home, Folder, ShieldCheck, Image as ImageIcon, Briefcase, Mail, Scale, MessageSquareText, ClipboardList, LogIn, UserCircle, LogOut } from 'lucide-react';
+import { Menu, Home, Folder, ShieldCheck, Briefcase, Mail, Scale, MessageSquareText, ClipboardList, LogIn, UserCircle, LogOut } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetClose,
 } from '@/components/ui/sheet';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import React, { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
 
-const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'Profil', href: '/profil/tentang-kami' },
-  { name: 'SLO', href: '/slo/informasi' },
-  { name: 'Karir', href: '/karir' },
-  { name: 'Kontak Kami', href: '/kontak' },
-];
-
 export function Header() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [scrolled, setScrolled] = React.useState(false);
   const [user, setUser] = useState<any>(null);
   const pathname = usePathname();
   const router = useRouter();
@@ -37,17 +27,6 @@ export function Header() {
     return undefined;
   }, [pathname]);
 
-  const isHome = pathname === '/';
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-  
-  // Fetch user auth status
   React.useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -61,7 +40,7 @@ export function Header() {
       }
     };
     fetchUser();
-  }, [pathname]); // Re-check when pathname changes
+  }, [pathname]);
 
   const handleLogout = async () => {
     try {
@@ -74,24 +53,23 @@ export function Header() {
   };
 
   const isDashboard = pathname.startsWith('/dashboard');
-  if (isDashboard) {
-    return null;
-  }
+  if (isDashboard) return null;
 
   return (
-    <header className="w-full bg-background border-b">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex items-center h-20">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Logo className=" h-14 md:h-16 w-auto" />
+          {/* Logo — relative + z-index agar selalu di atas */}
+          <Link href="/" className="relative z-10 mr-6 flex items-center shrink-0">
+            <Logo className="h-14 md:h-16 w-auto" />
           </Link>
 
-          <div className="hidden md:flex flex-1">
+          <div className="hidden md:flex flex-1 min-w-0">
             <MainNav />
           </div>
 
-          <div className="flex flex-1 items-center justify-end space-x-2">
-            {/* Desktop Login/Register/User buttons */}
+          {/* Desktop auth buttons — relative + z-index */}
+          <div className="relative z-10 flex items-center justify-end gap-2 ml-auto">
             <div className="hidden md:flex items-center gap-2">
               {user ? (
                 <>
@@ -107,17 +85,16 @@ export function Header() {
                   </Button>
                 </>
               ) : (
-                <>
-                  <Button asChild variant="ghost" size="sm">
-                    <Link href="/login">
-                      <LogIn className="h-4 w-4 mr-1" />
-                      Masuk
-                    </Link>
-                  </Button>
-                </>
+                <Button asChild size="sm" className="bg-primary hover:bg-primary/90 text-white font-semibold px-5">
+                  <Link href="/login">
+                    <LogIn className="h-4 w-4 mr-1.5" />
+                    Masuk
+                  </Link>
+                </Button>
               )}
             </div>
 
+            {/* Mobile hamburger */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild className="md:hidden">
                 <Button variant="ghost" size="icon">
@@ -127,174 +104,98 @@ export function Header() {
               </SheetTrigger>
               <SheetContent side="left" className="w-full sm:max-w-xs p-0">
                 <div className="flex flex-col h-full">
-                  {/* Brand header */}
-                  <div className="flex items-center gap-3 px-4 py-4 border-b bg-background/95 backdrop-blur">
+                  <div className="flex items-center gap-3 px-4 py-4 border-b bg-background">
                     <Link href="/" onClick={() => setIsOpen(false)} className="flex items-center gap-2">
-                      <Logo className="h-16 md:h-20 w-auto" />
-                      <span className="font-semibold">PT. SOLUSI ENERGI KELISTRIKAN INDONESIA</span>
+                      <Logo className="h-12 w-auto" />
+                      <span className="font-semibold text-sm leading-tight">PT. SOLUSI ENERGI<br />KELISTRIKAN INDONESIA</span>
                     </Link>
                   </div>
-                  <nav className="mt-6 space-y-2 overflow-y-auto">
-                    <div className="px-2 py-2">
-                      <Link
-                        href="/"
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                          'flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-primary/10 hover:text-primary border-b border-border/60',
-                          pathname === '/' && 'bg-primary text-primary-foreground'
-                        )}
-                      >
-                        <Home className="h-5 w-5" />
-                        Home
-                      </Link>
-                    </div>
+
+                  <nav className="mt-4 flex-1 overflow-y-auto px-2 space-y-1">
+                    <Link
+                      href="/"
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors',
+                        pathname === '/' && 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground'
+                      )}
+                    >
+                      <Home className="h-4 w-4" /> Home
+                    </Link>
 
                     <Accordion type="single" collapsible className="w-full" defaultValue={defaultAccordion}>
-                      <AccordionItem value="profil">
-                        <AccordionTrigger className="text-base px-2 rounded-lg hover:bg-primary/10 hover:text-primary border-b border-border/60">
-                          <span className="flex items-center gap-3"><Folder className="h-5 w-5" /> Profil</span>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="pl-2 space-y-1 divide-y divide-border/50">
-                            {profileComponents.map((item) => (
-                              <li key={item.href}>
-                                <Link
-                                  href={item.href}
-                                  className={cn(
-                                    'block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 border-l-2 border-transparent',
-                                    pathname === item.href && 'bg-primary text-primary-foreground hover:text-primary-foreground border-primary'
-                                  )}
-                                  onClick={() => setIsOpen(false)}
-                                >
-                                  {item.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-
-                      <AccordionItem value="slo">
-                        <AccordionTrigger className="text-base px-2 rounded-lg hover:bg-primary/10 hover:text-primary border-b border-border/60">
-                          <span className="flex items-center gap-3"><ShieldCheck className="h-5 w-5" /> SLO</span>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="pl-2 space-y-1 divide-y divide-border/50">
-                            {sloComponents.map((item) => (
-                              <li key={item.href}>
-                                <Link
-                                  href={item.href}
-                                  className={cn(
-                                    'block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 border-l-2 border-transparent',
-                                    pathname === item.href && 'bg-primary text-primary-foreground hover:text-primary-foreground border-primary'
-                                  )}
-                                  onClick={() => setIsOpen(false)}
-                                >
-                                  {item.title}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-
-                      <AccordionItem value="legalitas">
-                        <AccordionTrigger className="text-base px-2 rounded-lg hover:bg-primary/10 hover:text-primary border-b border-border/60">
-                          <span className="flex items-center gap-3"><Scale className="h-5 w-5" /> Legalitas Kami</span>
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="pl-2 space-y-1 divide-y divide-border/50">
-                            {legalitasComponents.map((item) => (
-                              <li key={item.href}>
-                                <a
-                                  href={item.href}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 border-l-2 border-transparent"
-                                  onClick={() => setIsOpen(false)}
-                                >
-                                  {item.title}
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
+                      {[
+                        { value: 'profil', icon: <Folder className="h-4 w-4" />, label: 'Profil', items: profileComponents },
+                        { value: 'slo', icon: <ShieldCheck className="h-4 w-4" />, label: 'SLO', items: sloComponents },
+                        { value: 'legalitas', icon: <Scale className="h-4 w-4" />, label: 'Legalitas Kami', items: legalitasComponents, external: true },
+                      ].map(({ value, icon, label, items, external }) => (
+                        <AccordionItem key={value} value={value} className="border-none">
+                          <AccordionTrigger className="text-sm font-medium px-3 py-2.5 rounded-lg hover:bg-primary/10 hover:text-primary hover:no-underline">
+                            <span className="flex items-center gap-3">{icon} {label}</span>
+                          </AccordionTrigger>
+                          <AccordionContent className="pb-1">
+                            <ul className="pl-3 space-y-0.5">
+                              {items.map((item: any) =>
+                                external ? (
+                                  <li key={item.href}>
+                                    <a href={item.href} target="_blank" rel="noopener noreferrer"
+                                      className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                                      onClick={() => setIsOpen(false)}>{item.title}</a>
+                                  </li>
+                                ) : (
+                                  <li key={item.href}>
+                                    <Link href={item.href}
+                                      className={cn(
+                                        'block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors',
+                                        pathname === item.href && 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground'
+                                      )}
+                                      onClick={() => setIsOpen(false)}>{item.title}</Link>
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
                     </Accordion>
 
-                    <div className="px-2 py-2 space-y-2">
-                      <Link
-                        href="/layanan"
-                        onClick={() => setIsOpen(false)}
+                    {[
+                      { href: '/layanan', icon: <MessageSquareText className="h-4 w-4" />, label: 'Konsultasi', match: '/layanan' },
+                      { href: '/intek', icon: <ClipboardList className="h-4 w-4" />, label: 'INTEK', match: '/intek' },
+                      { href: '/karir', icon: <Briefcase className="h-4 w-4" />, label: 'Karir', match: '/karir' },
+                      { href: '/kontak', icon: <Mail className="h-4 w-4" />, label: 'Kontak Kami', match: '/kontak' },
+                    ].map(({ href, icon, label, match }) => (
+                      <Link key={href} href={href} onClick={() => setIsOpen(false)}
                         className={cn(
-                          'flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-primary/10 hover:text-primary border-b border-border/60',
-                          pathname.startsWith('/layanan') && 'bg-primary text-primary-foreground'
+                          'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground hover:bg-primary/10 hover:text-primary transition-colors',
+                          pathname.startsWith(match) && 'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground'
                         )}
                       >
-                        <MessageSquareText className="h-5 w-5" />
-                        Konsultasi
+                        {icon} {label}
                       </Link>
-                      <Link
-                        href="/intek"
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                          'flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-primary/10 hover:text-primary border-b border-border/60',
-                          pathname.startsWith('/intek') && 'bg-primary text-primary-foreground'
-                        )}
-                      >
-                        <ClipboardList className="h-5 w-5" />
-                        INTEK
-                      </Link>
-                      <Link
-                        href="/karir"
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                          'flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-primary/10 hover:text-primary border-b border-border/60',
-                          pathname === '/karir' && 'bg-primary text-primary-foreground'
-                        )}
-                      >
-                        <Briefcase className="h-5 w-5" />
-                        Karir
-                      </Link>
-                      <Link
-                        href="/kontak"
-                        onClick={() => setIsOpen(false)}
-                        className={cn(
-                          'flex items-center gap-3 rounded-lg px-3 py-2 text-foreground hover:bg-primary/10 hover:text-primary border-b border-border/60',
-                          pathname === '/kontak' && 'bg-primary text-primary-foreground'
-                        )}
-                      >
-                        <Mail className="h-5 w-5" />
-                        Kontak Kami
-                      </Link>
-                    </div>
+                    ))}
                   </nav>
-                  <div className="mt-auto pt-4 space-y-2 px-2">
+
+                  <div className="p-4 border-t space-y-2">
                     {user ? (
                       <div className="grid grid-cols-2 gap-2">
-                        <Button asChild variant="outline" className="w-full" onClick={() => setIsOpen(false)}>
+                        <Button asChild variant="outline" size="sm" className="w-full" onClick={() => setIsOpen(false)}>
                           <Link href={['ADMIN', 'EDITOR', 'ADMIN_KONSULTASI', 'ADMIN_INTEK'].includes(user.role) ? '/dashboard' : '/profil'}>
-                            <UserCircle className="h-4 w-4 mr-1" />
-                            {user.name || 'Profil'}
+                            <UserCircle className="h-4 w-4 mr-1" />{user.name || 'Profil'}
                           </Link>
                         </Button>
-                        <Button variant="outline" className="w-full text-red-500 hover:text-red-600 hover:bg-red-50" onClick={() => { handleLogout(); setIsOpen(false); }}>
-                          <LogOut className="h-4 w-4 mr-1" />
-                          Keluar
+                        <Button variant="outline" size="sm" className="w-full text-red-500 hover:text-red-600 hover:bg-red-50"
+                          onClick={() => { handleLogout(); setIsOpen(false); }}>
+                          <LogOut className="h-4 w-4 mr-1" />Keluar
                         </Button>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 gap-2">
-                        <Button asChild variant="outline" className="w-full" onClick={() => setIsOpen(false)}>
-                          <Link href="/login">
-                            <LogIn className="h-4 w-4 mr-1" />
-                            Masuk
-                          </Link>
-                        </Button>
-                      </div>
+                      <Button asChild className="w-full bg-primary hover:bg-primary/90 text-white" size="sm" onClick={() => setIsOpen(false)}>
+                        <Link href="/login"><LogIn className="h-4 w-4 mr-1.5" />Masuk</Link>
+                      </Button>
                     )}
-                    <Button asChild className="w-full" variant="secondary">
-                       <a href="https://siujang.esdm.go.id/" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>Daftar SLO</a>
+                    <Button asChild className="w-full" variant="secondary" size="sm">
+                      <a href="https://siujang.esdm.go.id/" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}>Daftar SLO</a>
                     </Button>
                   </div>
                 </div>
