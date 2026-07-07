@@ -4,10 +4,17 @@ import { getUser } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 
+const ALLOWED_ROLES = new Set(['ADMIN', 'ADMIN_KONSULTASI']);
+
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await getUser(request);
     if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    // Only admin and admin_konsultasi may change consultation status
+    if (!ALLOWED_ROLES.has(auth.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
 
     const { id } = await params;
     const { status } = await request.json();

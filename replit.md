@@ -19,16 +19,24 @@ This is a Next.js application for SEIIKI (PT. Solusi Energi Kelistrikan Indonesi
 - Dashboard functionality for user management
 - Responsive design with mobile-first approach
 
-## Recent Changes (September 29, 2025)
-- ✅ Fresh GitHub clone imported to Replit environment
+## Database Configuration
+- **Type**: External PostgreSQL (NOT Replit built-in postgres module)
+- **Connection**: Configured via `DATABASE_URL` environment secret (points to external host)
+- **ORM**: Prisma — run `npx prisma db push` to sync schema, `npm run seed` to seed data
+- The `postgresql-16` Replit module is intentionally NOT used; the app connects to an external managed PostgreSQL instance via `DATABASE_URL`.
+
+## Required Environment Variables
+- `DATABASE_URL` — PostgreSQL connection string (external managed DB, already configured as secret)
+- `JWT_SECRET` — Secret for signing auth tokens (already configured as secret)
+
+## Recent Changes (July 7, 2026)
 - ✅ Installed all project dependencies via npm
-- ✅ Created and configured PostgreSQL database connection
-- ✅ Generated Prisma client and pushed database schema
-- ✅ Seeded database with initial data (admin user, hero slides, services, etc.)
-- ✅ Started frontend development server on port 5000 with proper host configuration
-- ✅ Tested application functionality - homepage, login, about page all working
-- ✅ Configured deployment settings for autoscale production deployment
-- ✅ Verified Replit proxy configuration with allowedDevOrigins
+- ✅ Pushed Prisma schema to external PostgreSQL database
+- ✅ Seeded database with initial data (admin users, hero slides, services, products, etc.)
+- ✅ Started frontend development server on port 5000
+- ✅ Fixed path traversal vulnerability in `/api/uploads/[...path]`
+- ✅ Fixed broken RBAC on `/api/konsultasi/[id]/status` (now requires ADMIN or ADMIN_KONSULTASI role)
+- ✅ Hardened `/api/konsultasi/[id]/payment` with file validation and submission state check
 
 ## Development Setup
 The application is configured to run on:
