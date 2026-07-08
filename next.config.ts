@@ -1,5 +1,11 @@
 import type {NextConfig} from 'next';
 
+const devOrigins = [
+  '127.0.0.1',
+  'localhost',
+  ...(process.env.REPLIT_DEV_DOMAIN ? [process.env.REPLIT_DEV_DOMAIN] : []),
+];
+
 const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
@@ -37,7 +43,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,
     domains: ['localhost'], // Tambahkan untuk development
   },
-  allowedDevOrigins: ['*'],
+  allowedDevOrigins: devOrigins,
   compress: true,
   poweredByHeader: false,
   async headers() {
