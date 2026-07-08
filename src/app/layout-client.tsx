@@ -29,7 +29,7 @@ export default function RootLayoutClient({
   return (
     <>
       <Header />
-      <main className="flex-grow">{children}</main>
+      <main className="flex-grow pt-20">{children}</main>
       <Footer />
       <WhatsAppFloat />
       <ScrollToTop />

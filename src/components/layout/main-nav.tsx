@@ -99,21 +99,6 @@ export const sloComponents: { title: string; href: string; description: string, 
     },
 ];
 
-export const surveyComponents: { title: string; href: string; description: string, icon: React.ReactNode }[] = [
-    {
-        title: 'Survey TR',
-        href: '/survei/tr',
-        description: 'Beri masukan untuk layanan Tegangan Rendah.',
-        icon: <BarChart className="h-4 w-4" />
-    },
-    {
-        title: 'Survey Non-TR',
-        href: '/survei/non-tr',
-        description: 'Beri masukan untuk layanan Tegangan Menengah/Tinggi.',
-        icon: <BarChart className="h-4 w-4" />
-    }
-];
-
 export const legalitasComponents: { title: string; href: string; description: string, icon: React.ReactNode }[] = [
     {
         title: 'PLTD',
@@ -135,26 +120,48 @@ export const legalitasComponents: { title: string; href: string; description: st
     }
 ];
 
-export function MainNav() {
+export function MainNav({ transparent = false }: { transparent?: boolean }) {
   const pathname = usePathname();
+
+  /* Shared style helpers */
+  const triggerCls = (active: boolean) =>
+    cn(
+      'transition-colors duration-200',
+      transparent
+        ? cn(
+            'text-white/90 hover:text-white bg-transparent hover:bg-white/15 data-[state=open]:bg-white/15',
+            active && 'text-white bg-white/20'
+          )
+        : cn(active && 'bg-accent text-accent-foreground')
+    );
+
+  const linkCls = (active: boolean) =>
+    cn(
+      navigationMenuTriggerStyle(),
+      'transition-colors duration-200',
+      transparent
+        ? cn(
+            'text-white/90 hover:text-white bg-transparent hover:bg-white/15',
+            active && 'text-white bg-white/20'
+          )
+        : cn(active && 'bg-accent text-accent-foreground')
+    );
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(
-            navigationMenuTriggerStyle(),
-            pathname === '/' && 'bg-accent text-accent-foreground'
-          )}>
+          <NavigationMenuLink asChild className={linkCls(pathname === '/')}>
             <Link href="/">Home</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
-        
+
         <NavigationMenuItem>
-          <NavigationMenuTrigger className={cn(
-            pathname.startsWith('/profil') && 'bg-accent text-accent-foreground'
-          )}>Profil</NavigationMenuTrigger>
+          <NavigationMenuTrigger className={triggerCls(pathname.startsWith('/profil'))}>
+            Profil
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {profileComponents.map((component) => (
                 <ListItem
                   key={component.title}
@@ -168,11 +175,11 @@ export function MainNav() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        
+
         <NavigationMenuItem>
-          <NavigationMenuTrigger className={cn(
-            pathname.startsWith('/slo') && 'bg-accent text-accent-foreground'
-          )}>SLO</NavigationMenuTrigger>
+          <NavigationMenuTrigger className={triggerCls(pathname.startsWith('/slo'))}>
+            SLO
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {sloComponents.map((component) => (
@@ -182,8 +189,8 @@ export function MainNav() {
                   href={component.href}
                   icon={component.icon}
                   {...(component.href.startsWith('http') && {
-                    target: "_blank",
-                    rel: "noopener noreferrer"
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
                   })}
                 >
                   {component.description}
@@ -194,52 +201,39 @@ export function MainNav() {
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(
-            navigationMenuTriggerStyle(),
-            pathname.startsWith('/layanan') && 'bg-accent text-accent-foreground'
-          )}>
+          <NavigationMenuLink asChild className={linkCls(pathname.startsWith('/layanan'))}>
             <Link href="/layanan">Layanan</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(
-            navigationMenuTriggerStyle(),
-            pathname.startsWith('/intek') && 'bg-accent text-accent-foreground'
-          )}>
+          <NavigationMenuLink asChild className={linkCls(pathname.startsWith('/intek'))}>
             <Link href="/intek">INTEK</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(
-            navigationMenuTriggerStyle(),
-            pathname.startsWith('/produk') && 'bg-accent text-accent-foreground'
-          )}>
+          <NavigationMenuLink asChild className={linkCls(pathname.startsWith('/produk'))}>
             <Link href="/produk">Produk</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(
-            navigationMenuTriggerStyle(),
-            pathname === '/karir' && 'bg-accent text-accent-foreground'
-          )}>
+          <NavigationMenuLink asChild className={linkCls(pathname === '/karir')}>
             <Link href="/karir">Karir</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuLink asChild className={cn(
-            navigationMenuTriggerStyle(),
-            pathname === '/kontak' && 'bg-accent text-accent-foreground'
-          )}>
+          <NavigationMenuLink asChild className={linkCls(pathname === '/kontak')}>
             <Link href="/kontak">Kontak Kami</Link>
           </NavigationMenuLink>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Legalitas Kami</NavigationMenuTrigger>
+          <NavigationMenuTrigger className={triggerCls(pathname.startsWith('/legalitas'))}>
+            Legalitas Kami
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[300px] gap-3 p-4 md:w-[400px]">
               {legalitasComponents.map((component) => (
@@ -257,7 +251,6 @@ export function MainNav() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-
       </NavigationMenuList>
     </NavigationMenu>
   );
