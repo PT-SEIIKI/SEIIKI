@@ -71,17 +71,8 @@ export default function PartnersSection() {
       whileHover={{ scale: 1.05 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="relative h-24 w-auto min-w-[160px] max-w-[200px] px-4 py-3 rounded-xl bg-white border-2 border-slate-100 flex flex-col items-center justify-center gap-1.5 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-200/50 hover:border-blue-300 transition-all duration-300 group-hover:-translate-y-1">
-        <div
-          className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-[10px] shrink-0"
-          style={{ backgroundColor: partner.bg, color: partner.color }}
-        >
-          {partner.abbr.slice(0, 4)}
-        </div>
-        <span className="text-[11px] font-semibold text-slate-700 text-center leading-tight line-clamp-2">{partner.title}</span>
-        <span className="text-[9px] font-medium text-slate-400 group-hover:text-blue-500 transition-colors">
-          {partner.category}
-        </span>
+      <div className="relative h-16 w-auto min-w-[180px] max-w-[240px] px-5 rounded-xl bg-white border-2 border-slate-100 flex items-center justify-center shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-200/50 hover:border-blue-300 transition-all duration-300 group-hover:-translate-y-1">
+        <span className="text-[12px] font-semibold text-slate-700 text-center leading-snug">{partner.title}</span>
       </div>
     </motion.div>
   );
