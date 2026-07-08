@@ -82,16 +82,12 @@ function HeroSection({ slides }: { slides: HeroSlide[] }) {
     }
     
     if (imageErrors.has(imageUrl)) {
-      console.log('Using fallback image due to error:', imageUrl);
       return '/header-1.jpg';
     }
-    
-    console.log('Using image URL:', imageUrl);
     return imageUrl;
   };
 
   const handleImageError = (imageUrl: string) => {
-    console.error('Image failed to load:', imageUrl);
     setImageErrors(prev => new Set(prev).add(imageUrl));
   };
 
@@ -130,26 +126,26 @@ function HeroSection({ slides }: { slides: HeroSlide[] }) {
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
       
-      {/* Floating particles effect */}
+      {/* Floating particles effect — deterministic positions to avoid hydration mismatch */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+        {[
+          { left: 12, dur: 3.5, delay: 0 },
+          { left: 24, dur: 4.2, delay: 0.4 },
+          { left: 37, dur: 2.8, delay: 0.8 },
+          { left: 51, dur: 3.9, delay: 1.2 },
+          { left: 63, dur: 4.5, delay: 0.2 },
+          { left: 76, dur: 3.1, delay: 1.6 },
+          { left: 88, dur: 4.8, delay: 0.6 },
+          { left: 6,  dur: 2.6, delay: 1.0 },
+          { left: 44, dur: 3.3, delay: 1.8 },
+          { left: 95, dur: 4.0, delay: 0.3 },
+        ].map((p, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-white/20 rounded-full"
-            animate={{
-              y: [0, -100],
-              opacity: [0, 1, 0],
-              scale: [0, 1, 0]
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: '100%',
-            }}
+            animate={{ y: [0, -120], opacity: [0, 1, 0], scale: [0, 1, 0] }}
+            transition={{ duration: p.dur, repeat: Infinity, delay: p.delay }}
+            style={{ left: `${p.left}%`, top: '100%' }}
           />
         ))}
       </div>
@@ -247,24 +243,18 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('Fetching data from API...');
         const [slidesRes, servicesRes, statsRes] = await Promise.all([
-          fetch('/api/hero-slides').then(r => {
-            console.log('Hero slides response status:', r.status);
-            return r.ok ? r.json() : [];
-          }),
+          fetch('/api/hero-slides').then(r => r.ok ? r.json() : []),
           fetch('/api/services').then(r => r.ok ? r.json() : []),
           fetch('/api/statistics').then(r => r.ok ? r.json() : [])
         ]);
-        
-        console.log('Hero slides data:', slidesRes);
         
         // Handle both direct array and wrapped object responses
         setSlides(Array.isArray(slidesRes) ? slidesRes : slidesRes.slides || []);
         setServices(Array.isArray(servicesRes) ? servicesRes : servicesRes.services || []);
         setStatistics(Array.isArray(statsRes) ? statsRes : statsRes.statistics || []);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        // fallback data handled below
         // Set fallback data
         setServices([
           {

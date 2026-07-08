@@ -3,29 +3,40 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
+interface Partner {
+  title: string;
+  abbr: string;
+  color: string;
+  bg: string;
+  category: string;
+}
+
 export default function PartnersSection() {
   const [isPaused, setIsPaused] = useState(false);
 
-  const partners = [
-    { title: "PLN", img: "https://dummyimage.com/200x80/0ea5e9/ffffff&text=PLN", category: "Utilitas" },
-    { title: "Kementerian ESDM", img: "https://dummyimage.com/200x80/64748b/ffffff&text=ESDM", category: "Pemerintah" },
-    { title: "Kontraktor Listrik", img: "https://dummyimage.com/200x80/0f172a/ffffff&text=Kontraktor", category: "Kontraktor" },
-    { title: "Asosiasi Industri", img: "https://dummyimage.com/200x80/334155/ffffff&text=Asosiasi", category: "Organisasi" },
-    { title: "Pabrikan Panel", img: "https://dummyimage.com/200x80/0369a1/ffffff&text=Panel", category: "Manufaktur" },
-    { title: "Penyedia Peralatan", img: "https://dummyimage.com/200x80/0891b2/ffffff&text=Peralatan", category: "Supplier" },
+  const partners: Partner[] = [
+    { title: "PLN", abbr: "PLN", color: "#0ea5e9", bg: "#e0f2fe", category: "Utilitas" },
+    { title: "Kementerian ESDM", abbr: "ESDM", color: "#64748b", bg: "#f1f5f9", category: "Pemerintah" },
+    { title: "Kontraktor Listrik", abbr: "KONL", color: "#0f172a", bg: "#f8fafc", category: "Kontraktor" },
+    { title: "Asosiasi Industri", abbr: "ASIN", color: "#334155", bg: "#f1f5f9", category: "Organisasi" },
+    { title: "Pabrikan Panel", abbr: "PAN", color: "#0369a1", bg: "#e0f2fe", category: "Manufaktur" },
+    { title: "Penyedia Peralatan", abbr: "PEER", color: "#0891b2", bg: "#cffafe", category: "Supplier" },
   ];
-  
-  const doubled = partners.flatMap((p) => [p, p]);
+
+  const doubled = [...partners, ...partners];
 
   return (
-    <section id="partners" className="py-20 md:py-32 bg-gradient-to-b from-background via-slate-50/30 to-background relative overflow-hidden">
+    <section
+      id="partners"
+      className="py-20 md:py-32 bg-gradient-to-b from-background via-slate-50/30 to-background relative overflow-hidden"
+    >
       {/* Background decorative elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-400/5 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-sky-400/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-0 relative z-10">
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           className="text-center max-w-3xl mx-auto mb-16"
           initial={{ opacity: 0, y: 30 }}
@@ -33,21 +44,13 @@ export default function PartnersSection() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           viewport={{ once: true, margin: "-100px" }}
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
-            className="inline-block"
-          >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-sky-500/10 border border-blue-200/50 text-sm font-medium text-blue-700 mb-6">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              Mitra Terpercaya
-            </span>
-          </motion.div>
-          
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-sky-500/10 border border-blue-200/50 text-sm font-medium text-blue-700 mb-6">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Mitra Terpercaya
+          </span>
+
           <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 bg-clip-text text-transparent leading-tight">
             Kerjasama Strategis
           </h2>
@@ -61,50 +64,45 @@ export default function PartnersSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
           viewport={{ once: true }}
-          className="relative"
+          className="relative marquee-wrapper"
         >
-          {/* Marquee container with pause on hover */}
-          <div 
-            className="relative overflow-hidden rounded-2xl bg-white/40 backdrop-blur-sm border border-slate-200/60 shadow-xl shadow-slate-200/50 py-8"
+          <div className="relative overflow-hidden rounded-2xl bg-white/40 backdrop-blur-sm border border-slate-200/60 shadow-xl shadow-slate-200/50 py-8"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
             <div
-              className="flex items-center gap-8 will-change-transform"
-              style={{ 
-                animation: `seiiki-marquee 35s linear infinite`,
-                animationPlayState: isPaused ? 'paused' : 'running'
-              }}
+              className="marquee-track marquee-track-left items-center gap-8"
+              style={{ animationPlayState: isPaused ? "paused" : "running" }}
             >
               {doubled.map((partner, idx) => (
-                <motion.div 
-                  key={idx} 
+                <motion.div
+                  key={idx}
                   className="shrink-0 group"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <div className="relative h-20 sm:h-24 md:h-28 w-auto px-8 py-4 rounded-xl bg-white border-2 border-slate-100 flex flex-col items-center justify-center gap-2 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-200/50 hover:border-blue-300 transition-all duration-300 group-hover:-translate-y-1">
-                    <img
-                      src={partner.img}
-                      alt={`Logo ${partner.title}`}
-                      className="h-12 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity"
-                      loading="lazy"
-                    />
-                    <span className="text-xs font-medium text-slate-500 group-hover:text-blue-600 transition-colors">
+                  <div className="relative h-24 w-auto min-w-[140px] px-6 py-4 rounded-xl bg-white border-2 border-slate-100 flex flex-col items-center justify-center gap-2 shadow-lg shadow-slate-200/50 hover:shadow-xl hover:shadow-blue-200/50 hover:border-blue-300 transition-all duration-300 group-hover:-translate-y-1">
+                    {/* Text-based logo */}
+                    <div
+                      className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm"
+                      style={{ backgroundColor: partner.bg, color: partner.color }}
+                    >
+                      {partner.abbr.slice(0, 3)}
+                    </div>
+                    <span className="text-xs font-semibold text-slate-700 whitespace-nowrap">{partner.title}</span>
+                    <span className="text-[10px] font-medium text-slate-400 group-hover:text-blue-500 transition-colors">
                       {partner.category}
                     </span>
-                    
-                    {/* Hover effect overlay */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-500/0 to-sky-500/0 group-hover:from-blue-500/5 group-hover:to-sky-500/5 transition-all duration-300" />
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            {/* Enhanced gradient overlays */}
+            {/* Gradient fade edges */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-white/40 to-transparent z-10" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-white/40 to-transparent z-10" />
           </div>
 
-          {/* Pause indicator */}
           {isPaused && (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -131,7 +129,7 @@ export default function PartnersSection() {
           {[
             { value: "50+", label: "Mitra Aktif" },
             { value: "15+", label: "Tahun Pengalaman" },
-            { value: "1000+", label: "Proyek Selesai" },
+            { value: "1.000+", label: "Proyek Selesai" },
             { value: "99%", label: "Kepuasan Klien" },
           ].map((stat, idx) => (
             <motion.div
@@ -145,21 +143,11 @@ export default function PartnersSection() {
               <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-sky-600 bg-clip-text text-transparent">
                 {stat.value}
               </div>
-              <div className="mt-2 text-sm text-slate-600 font-medium">
-                {stat.label}
-              </div>
+              <div className="mt-2 text-sm text-slate-600 font-medium">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
       </div>
-
-      <style jsx>{`
-        @keyframes seiiki-marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        section#partners .will-change-transform { width: 200%; }
-      `}</style>
     </section>
   );
 }

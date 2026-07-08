@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import Link from 'next/link';
 
 export type Testimonial = {
   quote: string;
@@ -12,37 +13,24 @@ export type Testimonial = {
 
 type InfiniteTestimonialsProps = {
   items: Testimonial[];
-  speed?: number;
   direction?: 'left' | 'right';
 };
 
-function InfiniteTestimonials({ items, speed = 60, direction = 'left' }: InfiniteTestimonialsProps) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+function InfiniteTestimonials({ items, direction = 'left' }: InfiniteTestimonialsProps) {
   const content = [...items, ...items];
-  const isLeft = direction === 'left';
+  const trackClass = direction === 'left' ? 'marquee-track marquee-track-right' : 'marquee-track marquee-track-left';
 
   return (
-    <div className="relative w-full overflow-hidden py-8">
+    <div className="relative w-full overflow-hidden py-8 marquee-wrapper">
       {/* Gradient overlays */}
       <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-background via-transparent to-background" />
-      
-      <div 
-        className="flex w-max gap-6" 
-        style={{
-          animation: `${isLeft ? 'marquee-left' : 'marquee-right'} linear infinite`,
-          animationDuration: '60s',
-          animationPlayState: hoveredIndex !== null ? 'paused' : 'running',
-        }}
-      >
+
+      <div className={`${trackClass} gap-6`}>
         {content.map((t, idx) => (
           <figure
             key={idx}
-            onMouseEnter={() => setHoveredIndex(idx)}
-            onMouseLeave={() => setHoveredIndex(null)}
             className="group relative min-w-[340px] max-w-[340px] md:min-w-[400px] md:max-w-[400px] rounded-3xl border border-border bg-card shadow-lg hover:shadow-2xl transition-all duration-500 p-6 hover:-translate-y-2"
-            style={{
-              background: 'linear-gradient(135deg, var(--card) 0%, var(--background) 100%)',
-            }}
+            style={{ background: 'linear-gradient(135deg, var(--card) 0%, var(--background) 100%)' }}
           >
             {/* Decorative quote icon */}
             <div className="absolute -top-3 -left-3 w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -85,7 +73,7 @@ function InfiniteTestimonials({ items, speed = 60, direction = 'left' }: Infinit
                   </div>
                 )}
               </div>
-              
+
               {/* Verified badge */}
               <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20">
@@ -99,17 +87,6 @@ function InfiniteTestimonials({ items, speed = 60, direction = 'left' }: Infinit
           </figure>
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes marquee-left {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @keyframes marquee-right {
-          0% { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -141,7 +118,7 @@ export default function TestimonialSection() {
       rating: 5,
     },
     {
-      quote: 'Standar keselamatan menjadi prioritas. Kami puas dengan audit menyeluruh yang dilakukan oleh PT. SEIKI.',
+      quote: 'Standar keselamatan menjadi prioritas. Kami puas dengan audit menyeluruh yang dilakukan oleh PT. SEIIKI.',
       author: 'Bima Nugraha',
       role: 'Owner Restoran',
       rating: 5,
@@ -153,7 +130,7 @@ export default function TestimonialSection() {
       {/* Decorative background elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
       <div className="absolute bottom-20 right-10 w-72 h-72 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '1s' }} />
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-16">
           {/* Badge */}
@@ -177,12 +154,12 @@ export default function TestimonialSection() {
               <div className="text-3xl font-bold text-foreground">4.9/5.0</div>
               <div className="text-sm text-muted-foreground mt-1">Rating Rata-rata</div>
             </div>
-            <div className="w-px bg-gray-200" />
+            <div className="w-px bg-border" />
             <div className="text-center">
               <div className="text-3xl font-bold text-foreground">500+</div>
               <div className="text-sm text-muted-foreground mt-1">Klien Puas</div>
             </div>
-            <div className="w-px bg-gray-200" />
+            <div className="w-px bg-border" />
             <div className="text-center">
               <div className="text-3xl font-bold text-foreground">98%</div>
               <div className="text-sm text-muted-foreground mt-1">Rekomendasi</div>
@@ -195,12 +172,15 @@ export default function TestimonialSection() {
         {/* CTA */}
         <div className="text-center mt-16">
           <p className="text-muted-foreground mb-6">Ingin menjadi bagian dari cerita sukses mereka?</p>
-          <button className="px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300 inline-flex items-center gap-2">
+          <Link
+            href="/layanan"
+            className="px-8 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-semibold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300 inline-flex items-center gap-2"
+          >
             Konsultasi Gratis
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
-          </button>
+          </Link>
         </div>
       </div>
     </section>

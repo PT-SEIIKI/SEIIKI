@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import { ShieldCheck, Zap, FileText, Award, Users, TrendingUp, Star, ArrowRight, Sparkles } from "lucide-react";
 
 export interface ServiceItem {
@@ -197,13 +198,14 @@ export default function ServicesGrid({ services }: { services: ServiceItem[] }) 
           <p className="text-muted-foreground mb-6">
             Butuh konsultasi lebih lanjut?
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-3 bg-gradient-to-r from-primary to-blue-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow duration-300"
-          >
-            Hubungi Kami
-          </motion.button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              href="/kontak"
+              className="inline-block px-8 py-3 bg-gradient-to-r from-primary to-blue-500 text-white rounded-full font-semibold shadow-lg hover:shadow-xl transition-shadow duration-300"
+            >
+              Hubungi Kami
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>
