@@ -17,36 +17,21 @@ export function WhatsAppFloat({
   className 
 }: WhatsAppButtonProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [contactInfo, setContactInfo] = useState<any[]>([]);
+  const [waNumber, setWaNumber] = useState<string>('');
 
   useEffect(() => {
-    // Show button after page loads
     const timer = setTimeout(() => setIsVisible(true), 1000);
-    
-    // Fetch WhatsApp number from contact info
-    const fetchContactInfo = async () => {
-      try {
-        const response = await fetch('/api/admin/contact-info');
-        if (response.ok) {
-          const data = await response.json();
-          setContactInfo(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch contact info:', error);
-      }
-    };
 
-    fetchContactInfo();
+    // Fetch WhatsApp number from public settings API
+    fetch('/api/settings/public')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.wa_admin_number) setWaNumber(data.wa_admin_number); })
+      .catch(() => { /* fall back to prop default */ });
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Find WhatsApp number from contact info
-  const whatsappContact = contactInfo.find(
-    contact => contact.type === 'PHONE' && contact.label.toLowerCase().includes('whatsapp')
-  );
-  
-  const finalPhoneNumber = whatsappContact?.value || phoneNumber;
+  const finalPhoneNumber = waNumber || phoneNumber;
 
   const handleClick = () => {
     const url = `https://wa.me/${finalPhoneNumber.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
@@ -60,7 +45,7 @@ export function WhatsAppFloat({
       <Button
         onClick={handleClick}
         size="lg"
-        className="rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce"
+        className="rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 whatsapp-pulse"
         aria-label="Hubungi via WhatsApp"
       >
         <MessageCircle className="h-6 w-6" />

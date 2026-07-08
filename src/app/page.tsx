@@ -304,9 +304,12 @@ export default function Home() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-pulse text-center">
-          <div className="w-12 h-12 bg-primary/20 rounded-full mx-auto mb-4 animate-bounce" />
-          <p className="text-muted-foreground">Memuat halaman...</p>
+        <div className="text-center space-y-4">
+          <div className="relative w-14 h-14 mx-auto">
+            <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
+            <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+          </div>
+          <p className="text-muted-foreground text-sm font-medium">Memuat halaman...</p>
         </div>
       </div>
     );

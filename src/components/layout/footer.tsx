@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Facebook, Instagram, Linkedin, Twitter, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 
@@ -67,10 +67,9 @@ export function Footer() {
             {/* Social Media */}
             <div className="flex gap-3 pt-2">
               {[
-                { icon: Facebook, label: 'Facebook', href: 'https://facebook.com' },
-                { icon: Twitter, label: 'Twitter', href: 'https://twitter.com' },
-                { icon: Instagram, label: 'Instagram', href: 'https://instagram.com' },
-                { icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com' },
+                { icon: Facebook, label: 'Facebook', href: 'https://www.facebook.com/seiiki.official' },
+                { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/seiiki.official' },
+                { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/company/seiiki' },
               ].map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
@@ -231,7 +230,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} PT. Solusi Energi Kelistrikan Indonesia. Semua Hak Cipta Dilindungi.</p>
+            <p suppressHydrationWarning>&copy; {new Date().getFullYear()} PT. Solusi Energi Kelistrikan Indonesia. Semua Hak Cipta Dilindungi.</p>
             <div className="flex gap-6">
               <Link href="/kebijakan-privasi" className="hover:text-primary transition-colors">
                 Kebijakan Privasi
